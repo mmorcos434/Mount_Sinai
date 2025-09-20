@@ -1,0 +1,9 @@
+CREATE_USERS_TABLE = """
+CREATE TABLE IF NOT EXISTS users (
+id SERIAL PRIMARY KEY,
+user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,  -- Supabase Auth link,
+name VARCHAR(255),
+email VARCHAR(255) UNIQUE NOT NULL,
+password TEXT
+);
+"""
