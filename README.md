@@ -4,7 +4,7 @@ THINGS TO DO:
 - answer questions how to prep for a procedure
 - check for which locations offer the desired procedure
 - answer questions about insurance prices
-# 3 datasets  
+ 
 
 2. DATA MODIFIABILITY
 - authorized users need a way to be able to change the data 
