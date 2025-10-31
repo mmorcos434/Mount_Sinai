@@ -18,45 +18,54 @@ function Signup() {
   const [success, setSuccess] = useState("");
   const navigate = useNavigate();
 
-  const onSubmit = async ({ email, password, role }) => {
-    // Dummy signup logic (no backend)
-    if (!email || !password || !role) {
+  const onSubmit = async ({ firstName, lastName, email, password, role }) => {
+    setError("");
+    setSuccess("");
+
+    if (!firstName || !lastName || !email || !password || !role) {
       setError("All fields are required");
       return;
     }
 
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
-        password,
-      })
+    try {
+      // 1. Sign up with Supabase Auth and set redirect URL for email verification
+      const { data, error: signUpError } = await supabase.auth.signUp(
+        {
+          email,
+          password,
+          options: {
+            emailRedirectTo: "http://localhost:5173/login"
+          },
+        }
+      );
 
-      if (signUpError) throw signUpError
+      if (signUpError) throw signUpError;
 
-      //FIX ME: ADD RLS policy and password requirements
-      //NEED to add name to ui 
-
-      // 2. Insert into your custom `users` table (extra info like role)
+      // 2. Insert user info into your "users" table
       if (data.user) {
         const { error: dbError } = await supabase.from("users").insert([
           {
             email,
-            user_id: data.user.id, // same as auth.users.id
+            user_id: data.user.id,
             role,
+            first_name: firstName,
+            last_name: lastName,
             login_time: new Date(),
           },
-        ])
+        ]);
 
-        if (dbError) throw dbError
-
+        if (dbError) throw dbError;
       }
 
-
-    setSuccess("Signup successful! Redirecting to login...");
-    setError("");
-      
-    // Redirect after 2 sec
-    setTimeout(() => navigate("/login"), 2000);
-  
+      // 3. Show success message
+      setSuccess(
+        "Signup successful! Please check your email to verify your account."
+      );
+      setError("");
+    } catch (err) {
+      console.error("Signup error:", err);
+      setError(err.message || "Something went wrong during signup.");
+    }
   };
 
   return (
@@ -65,9 +74,25 @@ function Signup() {
         <Typography variant="h5" color="primary" gutterBottom>
           Mount Sinai Signup
         </Typography>
+
         {error && <Alert severity="error">{error}</Alert>}
         {success && <Alert severity="success">{success}</Alert>}
+
         <form onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            {...register("firstName")}
+            label="First Name"
+            fullWidth
+            margin="normal"
+            required
+          />
+          <TextField
+            {...register("lastName")}
+            label="Last Name"
+            fullWidth
+            margin="normal"
+            required
+          />
           <TextField
             {...register("email")}
             label="Email"
@@ -95,6 +120,7 @@ function Signup() {
             <MenuItem value="agent">Agent</MenuItem>
             <MenuItem value="admin">Admin</MenuItem>
           </TextField>
+
           <Button
             type="submit"
             variant="contained"

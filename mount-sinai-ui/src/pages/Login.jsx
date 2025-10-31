@@ -29,15 +29,7 @@ function Login({ setAuth }) {
 
     //show error if they dont authnicate account of wrong password
 
-    
-
-
-
-
-
-
-
-    const user = data.user;
+  const user = data.user;
 
   const { data: userData, error: userError } = await supabase
     .from("users")
@@ -108,6 +100,13 @@ function Login({ setAuth }) {
           Don’t have an account?{" "}
           <Link href="/signup" underline="hover" color="secondary">
             Sign up here
+          </Link>
+        </Typography>
+
+        <Typography variant="body2" sx={{ mt: 2 }}>
+          Forgot Password?{" "}
+          <Link href="/resetpassword" underline="hover" color="secondary">
+            Reset Password
           </Link>
         </Typography>
       </Paper>

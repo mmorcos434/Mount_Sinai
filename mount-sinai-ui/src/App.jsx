@@ -6,6 +6,8 @@ import Signup from "./pages/Signup";
 import AdminDashboard from "./pages/AdminDashboard";
 import AgentChat from "./pages/AgentChat";
 import NotFound from "./pages/NotFound";
+import ResetPassword from "./pages/ResetPassword";
+import UpdatePassword from "./pages/UpdatePassword";
 
 function App() {
   const [auth, setAuth] = useState({ isLoggedIn: false, role: null });
@@ -19,6 +21,8 @@ function App() {
         {/* Auth Pages */}
         <Route path="/login" element={<Login setAuth={setAuth} />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
+        <Route path="/update-password" element={<UpdatePassword />} />
 
         {/* Agent Dashboard */}
         <Route
