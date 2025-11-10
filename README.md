@@ -1,14 +1,10 @@
-THINGS TO DO:
+1. Initialize faiss indexing
+    - curl -X POST http://127.0.0.1:8000/init_index
 
-1. CHATBOT FUNCTIONALITY
-- answer questions how to prep for a procedure
-- check for which locations offer the desired procedure
-- answer questions about insurance prices
- 
+2. Example of a file upload curl command: Be sure to replace with your file path after file=@
+   - curl -X POST \                                                                                                                                           ─╯
+  --form 'file=@"/Users/kristasingh/Desktop/Mount Sinai/MSCGemini/MAIN CAMPUS  MRI ROOM ASSIGNMENTS UPDATED 5.22.pdf";type=application/pdf' \
+  http://127.0.0.1:8000/upload
 
-2. DATA MODIFIABILITY
-- authorized users need a way to be able to change the data 
-- these changes need to be reflected in the dataset the chatbot uses
-
-3. SECURITY 
-- secure login for Mt Sinai employees
+3. Example of a question to run
+   - curl -X POST -F 'query=Which Gastrointestinal clips  are listed as MR Unsafe in our documents?' http://127.0.0.1:8000/chat 
