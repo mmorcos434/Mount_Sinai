@@ -1,0 +1,181 @@
+# Radiology Ordering Guide
+
+**Mount Sinai Health System**\
+
+## Locations Within the Mount Sinai Health System
+
+-   **The Mount Sinai Hospital (MSH)**
+    -   Radiology Associates\
+    -   Radiology Associates Hess\
+    -   Center for Advanced Medicine\
+    -   Dubin Breast Center
+-   **Mount Sinai Morningside (MSM)**
+    -   Radiology Associates Morningside (RAM)
+-   **Mount Sinai West (MSW)**
+    -   Radiology Associates West (RAW)\
+    -   Radiology Associates West at 787 (787)
+-   **Mount Sinai Doctors 34th St. (34)**\
+-   **Mount Sinai Downtown Chelsea Center (CC)**\
+-   **Mount Sinai Downtown Union Square (US)**\
+-   **New York Eye and Ear Infirmary of Mount Sinai (NYEE)**\
+-   **Mount Sinai Beth Israel (BI)**\
+-   **Mount Sinai Queens (MSQ)**\
+-   **Mount Sinai Doctors Brooklyn Heights (BH)**\
+-   **Mount Sinai Brooklyn (MSB)**\
+-   **Kingsway Diagnostic Imaging (KW)**\
+-   **Mount Sinai Doctors Long Island (LI)**
+
+------------------------------------------------------------------------
+
+## Modalities by Location
+
+  ------------------------------------------------------------------------------------------------------------
+  Modality           MSH   MSM   RAM   MSW   RAW   787   34   CC   US   NYEE   BI   MSQ   BH   MSB   KW   LI
+  ------------------ ----- ----- ----- ----- ----- ----- ---- ---- ---- ------ ---- ----- ---- ----- ---- ----
+  **X-Ray**          ●     ●     ●     ●     ●     ●     ●    ●    ●    ●      ●    ●     ●    \-    \-   
+
+  **Mammography**    ●     ●     ●     ●     ●     ●     ●    ●    ●    ●      ●    ●     ●    \-    \-   
+
+  **Breast           ●     ●     ●     ●     ●     ●     ●    ●    ●    ●      ●    ●     ●    \-    \-   
+  Ultrasound**                                                                                            
+
+  **Bone             ●     ●     ●     ●     ●     ●     ●    ●    ●    \-     \-   \-    \-   \-    \-   
+  Densitometry                                                                                            
+  (DEXA)**                                                                                                
+
+  **Ultrasound**     ●     ●     ●     ●     ●     ●     ●    ●    ●    ●      ●    ●     ●    \-    \-   
+
+  **Nuclear          ●     ●     ●     ●     ●     ●     ●    \-   \-   \-     \-   \-    \-   \-    \-   
+  Medicine**                                                                                              
+
+  **CT (Computed     ●     ●     ●     ●     ●     ●     ●    ●    ●    ●      ●    ●     ●    \-    \-   
+  Tomography)**                                                                                           
+
+  **MRI (Magnetic    ●     ●     ●     ●     ●     ●     ●    ●    ●    ●      ●    \-    \-   \-    \-   
+  Resonance                                                                                               
+  Imaging)**                                                                                              
+
+  **Interventional   ●     ●     ●     ●     ●     ●     ●    \-   \-   \-     \-   \-    \-   \-    \-   
+  Radiology (IR)**                                                                                        
+
+  **PET (Positron    ●     ●     ●     ●     ●     ●     ●    \-   \-   \-     \-   \-    \-   \-    \-   
+  Emission                                                                                                
+  Tomography)**                                                                                           
+  ------------------------------------------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## Site Directory and Contact Information
+
+  -------------------------------------------------------------------------
+  **Site**        **Address**         **Scheduling**         **Fax**
+  --------------- ------------------- ---------------------- --------------
+  **The Mount     One Gustave L. Levy 212-241-8333           212-348-7403
+  Sinai Hospital  Place, New York, NY                        
+  (MSH)**         10029                                      
+
+  **Mount Sinai   440 W 114th Street, 212-523-8332           212-523-2981
+  Morningside     3rd Floor, New                             
+  (MSM)**         York, NY 10025                             
+
+  **Radiology     1090 Amsterdam Ave, 212-523-8333           212-348-8989
+  Associates      3rd Floor, New                             
+  Morningside     York, NY 10025                             
+  (RAM)**                                                    
+
+  **Mount Sinai   1000 Tenth Avenue,  212-523-8332           212-523-8322
+  West (MSW)**    4th Floor, New                             
+                  York, NY 10019                             
+
+  **Radiology     787 11th Avenue,    212-523-8333           212-523-8989
+  Associates West 7th Floor, New                             
+  at 787 (787)**  York, NY 10019                             
+
+  **Radiology     425 West 59th       212-523-8333           212-523-8989
+  Associates West Street, 6th Floor,                         
+  (RAW)**         New York, NY 10019                         
+
+  **Mount Sinai   55 East 34th        212-252-6004           212-252-6073
+  Doctors 34th    Street, New York,                          
+  St. (34)**      NY 10016                                   
+
+  **Mount Sinai   325 West 15th       212-604-6009           212-367-1707
+  Downtown        Street, New York,                          
+  Chelsea Center  NY 10011                                   
+  (CC)**                                                     
+
+  **Mount Sinai   10 Union Square     212-844-8880           212-844-6815
+  Downtown Union  East, Suite 3P, New                        
+  Square (US)**   York, NY 10003                             
+
+  **New York Eye  310 East 14th       212-979-4000           212-353-5927
+  and Ear         Street, New York,                          
+  Infirmary of    NY 10003                                   
+  Mount Sinai                                                
+  (NYEE)**                                                   
+
+  **Mount Sinai   1st Avenue at 16th  212-844-8880 (Main) /  212-844-6815
+  Beth Israel     Street, New York,   212-420-2509 (IR)      (Main) /
+  (BI)**          NY 10003                                   212-844-1098
+                                                             (IR)
+
+  **Mount Sinai   25-10 30th Avenue,  718-808-7500           718-808-7988
+  Queens (MSQ)**  Astoria, NY 11102                          
+
+  **Mount Sinai   300 Cadman Plaza,   929-210-6000           929-210-6001
+  Doctors         Brooklyn, NY 11201                         
+  Brooklyn                                                   
+  Heights (BH)**                                             
+
+  **Mount Sinai   3201 Kings Highway, 718-951-2930           718-951-2718
+  Brooklyn        Brooklyn, NY 11234                         
+  (MSB)**                                                    
+
+  **Mount Sinai   3131 Kings Highway, 718-758-1500           718-758-2400
+  Kingsway (KW)** Brooklyn, NY 11234                         
+
+  **Mount Sinai   5 Cuba Hill Road,   631-628-5201           631-628-5708
+  Doctors Long    Greenlawn, NY 11740                        
+  Island (LI)**                                              
+  -------------------------------------------------------------------------
+
+------------------------------------------------------------------------
+
+## NPI and Tax ID Information
+
+  ------------------------------------------------------------------------
+  **Entity**          **NPI**         **Tax ID**          **Notes**
+  ------------------- --------------- ------------------- ----------------
+  Downtown Union      1174689665      13-5564934          
+  Square, Beth                                            
+  Israel, Chelsea                                         
+  Center                                                  
+
+  New York Eye & Ear  1245251222      13-5562304          
+
+  Radiology           1487995700      80-0886397          
+  Associates                                              
+
+  Nuclear Medicine    1629319413      80-0886397          
+
+  Radiology           1942543889      80-0886397          
+  Associates West /                                       
+  787 / 34th St. / BH                                     
+  / KW / RAM                                              
+
+  Mount Sinai         1174768071      13-5564934          
+  Brooklyn (MSB)                                          
+
+  Mount Sinai Queens  1245248939      13-1624096          
+  (MSQ)                                                   
+
+  Mount Sinai Long    1275640609      11-3492255          
+  Island (LI)                                             
+
+  Mount Sinai         1477958007      13-2997301          
+  Morningside (MSM)                                       
+
+  Mount Sinai West    1104982917      13-2997301          
+  (MSW)                                                   
+  ------------------------------------------------------------------------
+	

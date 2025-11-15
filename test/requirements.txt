@@ -1,0 +1,31 @@
+# --- Core data handling ---
+pandas>=2.1.0
+sqlalchemy>=2.0.0
+openpyxl>=3.1.0
+
+# --- Embedding model ---
+sentence-transformers>=2.7.0
+torch>=2.2.0
+
+# --- Vector database (persistent storage) ---
+chromadb>=0.5.3
+
+# --- PDF and text parsing ---
+PyPDF2>=3.0.0
+
+# --- Web / API (for app deployment) ---
+fastapi>=0.115.0
+uvicorn>=0.30.0
+
+# --- Utilities ---
+tqdm>=4.66.0
+numpy>=1.26.0
+
+# --- LLM integration ---
+openai>=1.40.0   # latest stable SDK for GPT-4o and GPT-4o-mini
+
+# --- (Optional) For production servers / hosting ---
+gunicorn>=21.2.0
+
+# --- (Optional) For local environment sanity ---
+python-dotenv>=1.0.1  # helps load API keys from .env

@@ -1,0 +1,282 @@
+# HESS & RA MRI Room Assignments (Updated 6.5.25)
+
+### **Magnet Types**
+
+* **Wide Bore:** 2, 4, 5, 8, 9, 10, 13
+* **1.5T:** 1, 3, 5, 6, 7, 8, 10
+* **3T:** 2, 4, 9, 12, 13
+
+---
+
+## **MSK**
+
+### **ANKLE (Hindfoot)**
+
+Rooms: 1, 2, 3, 5, 6, 7, 10
+
+### **Forefoot**
+
+Rooms: 1, 2, 3, 5, 10
+
+### **Knee**
+
+Rooms: 1, 2, 3, 5, 6, 7, 10
+
+### **Shoulder**
+
+Rooms: 1, 2, 3, 5, 6, 7, 10
+
+### **Hips**
+
+Rooms: All
+
+### **MSK Chest / Rib**
+
+Rooms: All
+
+### **Arthrogram Hip**
+
+Rooms: 1–7
+
+### **Boney Pelvis**
+
+Rooms: All
+
+### **Long Bone**
+
+Rooms: 1–7, 10
+
+### **Elbow**
+
+Rooms: 2, 5, 10
+
+### **Wrist**
+
+Rooms: 2, 5, 9
+
+### **MSK Pelvis**
+
+Rooms: All
+
+### **Hand / Finger**
+
+Rooms: 2, 5, 9
+
+### **Thumb**
+
+Rooms: 2, 5, 9
+
+### **Metal Hardware**
+
+Rooms: 1, 3, 5, 6, 7, 8, 10
+
+---
+
+## **SPINE**
+
+### **MRA Spinal Cord**
+
+Room: 2
+
+### **C / T / L Spine**
+
+Rooms: All
+
+### **Spine CSF Leak (90 mins needed)**
+
+Rooms: 2, 4, 9, 13
+
+### **Spine Survey**
+
+Rooms: All
+
+### **Sacrum / Sacral Plexus**
+
+Rooms: All (No 12)
+
+### **Lumbosacral Plexus**
+
+Rooms: All (No 12)
+
+---
+
+## **ENT**
+
+### **Mandible / Sinus**
+
+Rooms: All (No 12)
+
+### **TMJ**
+
+Rooms: All (No 12)
+
+### **IAC (Any)**
+
+Rooms: All
+
+### **Orbit / Orbit**
+
+Rooms: All
+
+### **Parathyroid**
+
+Room: 9
+
+### **Brachial Plexus**
+
+Rooms: All (No 12)
+
+### **Meniere (Arrive 4 hr prior)**
+
+Rooms: 4, 9, 13
+
+### **Neck**
+
+Rooms: All
+
+---
+
+## **BODY**
+
+### **Screening Chest**
+
+Rooms: All
+
+### **AbdPel Combo**
+
+Rooms: 2, 4–13
+
+### **Liver Mass**
+
+Rooms: All
+
+### **Liver / Kidney Donor**
+
+Rooms: 8, 9
+
+### **Kidney Donor**
+
+Rooms: 8, 9, 10, 13
+
+### **MRCP**
+
+Rooms: All
+
+### **MRCP Secretin**
+
+Rooms: 8, 9, 10
+
+### **Female Pelvis**
+
+Rooms: All
+
+### **UFE Fibroid**
+
+Rooms: All
+
+### **Fetal Pelvis**
+
+Rooms: 5, 6, 8, 10
+
+### **Enterography**
+
+Rooms: 4, 5, 6, 7, 8, 9, 10, 13
+
+### **Renal Mass**
+
+Rooms: All
+
+### **Prostate / Infertility**
+
+Rooms: 2, 4, 9, 12, 13
+
+### **Defecography**
+
+Rooms: 8, 9, 10
+
+### **MRA / MRV Abdomen**
+
+Rooms: 4–10, 13
+
+### **Abd Elastography**
+
+Rooms: 1, 2, 8, 9
+
+### **Adrenal Mass**
+
+Rooms: All
+
+---
+
+## **FETAL**
+
+### **Fetal Neuro / Body**
+
+Rooms: 5, 6, 8, 10
+
+---
+
+## **RESEARCH**
+
+* **Gaucher (Femur WO / Abd WO):** 1, 3
+* **Bernstein:** 1, 3
+* **Clario:** 4
+* **Fast MRI Brain:** 2, 8
+* **Regeneron:** 8
+
+---
+
+## **BREAST**
+
+### **Routine Breast / Silicone**
+
+Rooms: 1, 2
+
+### **Breast Biopsy**
+
+Room: 1
+
+---
+
+## **RA & Hess MRI Protocol and Room Assignments**
+
+---
+
+### **NEURO**
+
+| **Exam**                           | **Rooms**          |
+| ---------------------------------- | ------------------ |
+| MRA Head/Neck                      | All                |
+| MRA Head (Vessel Wall Imaging)     | 2, 9               |
+| Brain CSF Flow                     | 1, 2, 3, 4         |
+| Sinus - CSF Leak (Delman) - 60 Min | 2                  |
+| Brain Spectroscopy                 | 1, 2, 3            |
+| MS Icometrix                       | 4, 9               |
+| Brain Diamox                       | 2                  |
+| Neurogram                          | 4, 9               |
+| Thoracic Outlet Syndrome           | 4, 5, 8, 9, 10, 13 |
+| DWIB Neuro / Body                  | 8                  |
+| NF1 Body / Neuro                   | 8                  |
+| DIEP Flap                          | 8, 10              |
+
+---
+
+### **VASCULAR**
+
+| **Exam**        | **Rooms**            |
+| --------------- | -------------------- |
+| Peds Cardiac    | 3                    |
+| Cardiac         | 6, 7                 |
+| Aorta           | 4, 5, 6, 7, 8, 9, 10 |
+| Runoff          | 7, 8                 |
+| Renal MRA       | 4–10, 13             |
+| MRA Spinal Cord | 2                    |
+
+---
+
+### **Magnet Types**
+
+* **Wide Bore:** 2, 4, 5, 8, 9, 10, 13
+* **1.5T:** 1, 3, 5, 6, 7, 8, 10
+* **3T:** 2, 4, 9, 12, 13
+

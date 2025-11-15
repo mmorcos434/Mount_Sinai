@@ -1,18 +1,51 @@
-# Virtual environments
-venv/
-
-# Python cache
-__pycache__/
-*.pyc
-
-# macOS files
+###########
+# macOS
+###########
 .DS_Store
 
-# VS Code settings
+###########
+# VS Code
+###########
 .vscode/
 
-# Local database / vector store / test data
-test/chroma_db/
-test/data/
-test/db/
+###########
+# Python
+###########
+# Virtual environments
+venv/
+env/
+.venv/
 
+# Bytecode
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Virtual store / cache
+*.sqlite3
+*.db
+
+###########
+# Node.js
+###########
+node_modules/
+dist/
+build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+###########
+# Environment files
+###########
+.env
+.env.*
+*.env
+
+###########
+# Misc
+###########
+*.log
