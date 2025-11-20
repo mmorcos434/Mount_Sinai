@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   AppBar,
   Toolbar,
@@ -25,6 +25,9 @@ function AgentChat({ auth }) {
   const [greeting, setGreeting] = useState("");
   const navigate = useNavigate();
 
+  // 🆕 Auto-scroll reference
+  const messagesEndRef = useRef(null);
+
   // 🕒 Dynamic greeting based on time
   useEffect(() => {
     const hour = new Date().getHours();
@@ -33,6 +36,16 @@ function AgentChat({ auth }) {
     else setGreeting("Good evening");
   }, []);
 
+  // 🆕 Scroll to bottom when messages change
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  // 🛰️ Connect to backend
   const sendToBackend = async (question) => {
     try {
       const res = await fetch("http://localhost:8000/agent-chat", {
@@ -40,43 +53,37 @@ function AgentChat({ auth }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question }),
       });
-  
+
       const data = await res.json();
       return data.answer;
     } catch (error) {
       return "Error: Could not connect to backend.";
     }
   };
-  
 
+  // 💬 Send message logic
   const handleSend = async () => {
     if (!input.trim()) return;
-  
-    // Add user's message to chat
+
+    // Add user's message
     const newMessages = [...messages, { sender: "agent", text: input }];
     setMessages(newMessages);
-  
-    // ⏳ Optional: temporary "Thinking..." bubble
-    setMessages(prev => [
-      ...prev,
-      { sender: "bot", text: "Thinking..." }
-    ]);
-  
-    // Call backend
-    const backendReply = await sendToBackend(input);
-  
-    // Replace "Thinking..." with real message
-    setMessages(prev => {
-      const updated = [...newMessages]; // remove old "thinking" message
-      return [
-        ...updated,
-        { sender: "bot", text: backendReply }
-      ];
-    });
-  
+
+    // Clear the input immediately
     setInput("");
+
+    // Add temporary "Thinking..." message
+    setMessages((prev) => [...prev, { sender: "bot", text: "Thinking..." }]);
+
+    // Get backend reply
+    const backendReply = await sendToBackend(input);
+
+    // Replace "Thinking..." with real response
+    setMessages((prev) => [
+      ...newMessages,
+      { sender: "bot", text: backendReply },
+    ]);
   };
-  
 
   // 🚪 Logout
   const handleLogout = () => {
@@ -186,6 +193,9 @@ function AgentChat({ auth }) {
                 />
               </ListItem>
             ))}
+
+            {/* 🆕 Scroll anchor */}
+            <div ref={messagesEndRef} />
           </List>
 
           {/* ✍️ Input Bar */}
