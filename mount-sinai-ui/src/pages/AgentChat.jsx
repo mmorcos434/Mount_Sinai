@@ -33,20 +33,50 @@ function AgentChat({ auth }) {
     else setGreeting("Good evening");
   }, []);
 
-  // 💬 Send message logic
-  const handleSend = () => {
+  const sendToBackend = async (question) => {
+    try {
+      const res = await fetch("http://localhost:8000/agent-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question }),
+      });
+  
+      const data = await res.json();
+      return data.answer;
+    } catch (error) {
+      return "Error: Could not connect to backend.";
+    }
+  };
+  
+
+  const handleSend = async () => {
     if (!input.trim()) return;
-
+  
+    // Add user's message to chat
     const newMessages = [...messages, { sender: "agent", text: input }];
-
-    const botReply = {
-      sender: "bot",
-      text: `You asked: "${input}". (AI response will appear here...)`,
-    };
-
-    setMessages([...newMessages, botReply]);
+    setMessages(newMessages);
+  
+    // ⏳ Optional: temporary "Thinking..." bubble
+    setMessages(prev => [
+      ...prev,
+      { sender: "bot", text: "Thinking..." }
+    ]);
+  
+    // Call backend
+    const backendReply = await sendToBackend(input);
+  
+    // Replace "Thinking..." with real message
+    setMessages(prev => {
+      const updated = [...newMessages]; // remove old "thinking" message
+      return [
+        ...updated,
+        { sender: "bot", text: backendReply }
+      ];
+    });
+  
     setInput("");
   };
+  
 
   // 🚪 Logout
   const handleLogout = () => {
