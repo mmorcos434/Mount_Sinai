@@ -49,7 +49,6 @@ function AgentChat({ auth }) {
   const [input, setInput] = useState("");
   const [greeting, setGreeting] = useState("");
 
-  // OPEN/CLOSED SIDEBAR
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   // Greeting
@@ -112,7 +111,7 @@ function AgentChat({ auth }) {
     );
   }, [chats, currentChatId, mode]);
 
-  // Auto-scroll on new messages
+  // Auto-scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats, currentChatId]);
@@ -131,6 +130,18 @@ function AgentChat({ auth }) {
       setMode(currentChat.mode);
     }
   }, [currentChat]);
+
+
+  // 🔥🔥🔥 SAFETY FIX: Prevent blank screen crash
+  if (!currentChat) {
+    return (
+      <Box sx={{ p: 5, textAlign: "center", fontSize: 20 }}>
+        Loading chats…
+      </Box>
+    );
+  }
+  // 🔥🔥🔥 END FIX
+
 
   // Backend call
   const sendToBackend = async (question, activeMode) => {
@@ -303,7 +314,6 @@ function AgentChat({ auth }) {
 
   return (
     <Box sx={{ bgcolor: "#F7F9FC", minHeight: "100vh" }}>
-      {/* NAVBAR */}
       <AppBar position="static" sx={{ bgcolor: "#002F6C" }}>
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box display="flex" alignItems="center" gap={1.5}>
@@ -340,7 +350,7 @@ function AgentChat({ auth }) {
         }}
       >
         <Typography variant="h5" sx={{ fontWeight: "bold", color: "#002F6C" }}>
-          {greeting}, {auth?.firstName}!
+          {`${greeting}, ${auth?.firstName} ${auth?.lastName}!`}
         </Typography>
         <Typography sx={{ color: "#555" }}>
           Welcome back to your Radiology Chat Assistant Dashboard.
@@ -349,7 +359,7 @@ function AgentChat({ auth }) {
 
       {/* LAYOUT */}
       <Box sx={{ display: "flex", px: 4, pb: 6, gap: 3 }}>
-        {/* SIDEBAR */}
+        {/* Sidebar */}
         {sidebarOpen && (
           <Paper
             elevation={4}
@@ -362,7 +372,6 @@ function AgentChat({ auth }) {
               maxHeight: "75vh",
             }}
           >
-            {/* Collapse Button */}
             <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
               <Button
                 onClick={() => setSidebarOpen(false)}
@@ -391,8 +400,7 @@ function AgentChat({ auth }) {
                 mb: 1,
                 borderRadius: 2,
                 textTransform: "none",
-                background:
-                  "linear-gradient(90deg,#002F6C,#642F6C)",
+                background: "linear-gradient(90deg,#002F6C,#642F6C)",
               }}
             >
               + New Scheduling Chat
@@ -406,8 +414,7 @@ function AgentChat({ auth }) {
                 mb: 2,
                 borderRadius: 2,
                 textTransform: "none",
-                background:
-                  "linear-gradient(90deg,#666,#999)",
+                background: "linear-gradient(90deg,#666,#999)",
               }}
             >
               + New Document Q&A
@@ -449,7 +456,6 @@ function AgentChat({ auth }) {
           </Paper>
         )}
 
-        {/* Expand button when sidebar is closed */}
         {!sidebarOpen && (
           <Button
             onClick={() => setSidebarOpen(true)}
