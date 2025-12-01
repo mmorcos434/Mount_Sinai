@@ -1,3 +1,7 @@
+// ===============================================
+// AdminDashboard (Upgraded UI + Apple-style Toggle)
+// ===============================================
+
 import {
   AppBar,
   Toolbar,
@@ -26,19 +30,28 @@ import {
   Select,
   Snackbar,
   Alert,
+  Switch,
+  FormControlLabel,
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+
 import { useState, forwardRef } from "react";
 import { useNavigate } from "react-router-dom";
-import MSLogo from "../assets/MSLogo.png";
+import MSLogoWhite from "../assets/MSLogoWhite.png";
 
+import AgentChat from "./AgentChat";
+
+// Slide transition for delete modal
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 function AdminDashboard({ auth }) {
+  const navigate = useNavigate();
+
+  // Admin data states
   const [files, setFiles] = useState([]);
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
@@ -52,21 +65,20 @@ function AdminDashboard({ auth }) {
 
   const [alert, setAlert] = useState({ open: false, msg: "", type: "success" });
 
-  const navigate = useNavigate();
+  // Toggle between Admin Dashboard and Chat Assistant
+  const [showChat, setShowChat] = useState(false);
 
-  // =========================================================
-  // BACKEND UPLOAD FILE
-  // =========================================================
+  // -----------------------------
+  // Backend Upload
+  // -----------------------------
   const handleUploadBackend = async (file) => {
     const formData = new FormData();
     formData.append("file", file);
-
     try {
       const res = await fetch("http://localhost:8000/upload", {
         method: "POST",
         body: formData,
       });
-
       const data = await res.json();
 
       setAlert({
@@ -83,15 +95,14 @@ function AdminDashboard({ auth }) {
     }
   };
 
-  // =========================================================
-  // RESET FAISS INDEX
-  // =========================================================
+  // -----------------------------
+  // Reset FAISS Index
+  // -----------------------------
   const handleResetIndex = async () => {
     try {
       const res = await fetch("http://localhost:8000/init_index", {
         method: "POST",
       });
-
       const data = await res.json();
       setAlert({ open: true, msg: data.message, type: "success" });
     } catch {
@@ -103,9 +114,9 @@ function AdminDashboard({ auth }) {
     }
   };
 
-  // =========================================================
-  // ADD TEXT-BASED POLICY NOTE
-  // =========================================================
+  // -----------------------------
+  // Add text note
+  // -----------------------------
   const handleAddPolicy = () => {
     if (!noteTitle.trim() || !noteContent.trim()) return;
 
@@ -130,14 +141,12 @@ function AdminDashboard({ auth }) {
     setNoteContent("");
   };
 
-  // =========================================================
-  // VIEW + DELETE
-  // =========================================================
+  // View selected file
   const handleView = (url) => window.open(url, "_blank");
 
+  // Delete file
   const confirmDelete = () => {
     setFiles((prev) => prev.filter((f) => f.name !== fileToDelete));
-    setFileToDelete(null);
     setOpenConfirm(false);
   };
 
@@ -149,33 +158,69 @@ function AdminDashboard({ auth }) {
     return "Good evening";
   };
 
+  // Apple-style toggle styling
+  const SwitchStyles = {
+    "& .MuiSwitch-switchBase.Mui-checked": {
+      color: "#E41C77",
+    },
+    "& .MuiSwitch-track": {
+      background:
+        "linear-gradient(90deg, #002F6C 0%, #642F6C 50%, #E41C77 100%)",
+      opacity: 1,
+    },
+    transform: "scale(1.3)",
+  };
+
   return (
-    <Box sx={{ bgcolor: "#F7F9FC", minHeight: "100vh" }}>
-      {/* NAVBAR */}
-      <AppBar position="static" sx={{ bgcolor: "#002F6C" }}>
+    <Box sx={{ bgcolor: "#F4F7FB", minHeight: "100vh" }}>
+      {/* ================= NAVBAR (ALWAYS SHOWN) ================= */}
+      <AppBar
+        position="static"
+        sx={{
+          bgcolor: "#002F6C",
+          boxShadow: "0 4px 18px rgba(0,0,0,0.18)",
+        }}
+      >
         <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          {/* LEFT */}
           <Box display="flex" alignItems="center" gap={1.5}>
-            <Box component="img" src={MSLogo} alt="Mount Sinai" sx={{ width: 42 }} />
+            <img src={MSLogoWhite} alt="Mount Sinai" width={42} />
             <Typography variant="h6" fontWeight="bold">
               Mount Sinai Radiology Admin
             </Typography>
           </Box>
 
-          <Box display="flex" alignItems="center" gap={2}>
-            <Typography sx={{ color: "white", fontWeight: 500 }}>
-              {auth?.firstName || "Admin"} {auth?.lastName || ""}
+          {/* RIGHT */}
+          <Box display="flex" alignItems="center" gap={4}>
+            {/* APPLE TOGGLE SWITCH */}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={showChat}
+                  onChange={() => setShowChat(!showChat)}
+                  sx={SwitchStyles}
+                />
+              }
+              label={
+                <Typography
+                  sx={{
+                    color: "white",
+                    fontWeight: "600",
+                    fontSize: "15px",
+                  }}
+                >
+                  {showChat ? "Chat Assistant" : "Admin Dashboard"}
+                </Typography>
+              }
+            />
+
+            <Typography sx={{ color: "white" }}>
+              {auth?.firstName} {auth?.lastName}
             </Typography>
 
             <Button
               variant="outlined"
-              sx={{
-                borderColor: "white",
-                color: "white",
-                "&:hover": {
-                  background: "linear-gradient(90deg, #E41C77, #00ADEF)",
-                  borderColor: "transparent",
-                },
-              }}
+              sx={{ color: "white", borderColor: "white" }}
               onClick={() => navigate("/login")}
             >
               LOGOUT
@@ -184,375 +229,346 @@ function AdminDashboard({ auth }) {
         </Toolbar>
       </AppBar>
 
-      {/* GREETING */}
-      <Box
-        sx={{
-          background: "linear-gradient(135deg, #E6F0FA 0%, #FFFFFF 100%)",
-          m: 4,
-          p: 3,
-          borderRadius: 3,
-          textAlign: "center",
-          boxShadow: 2,
-        }}
-      >
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#002F6C" }}>
-          {getGreeting()}, {auth?.firstName || "Admin"} {auth?.lastName || ""}!
-        </Typography>
-        <Typography sx={{ color: "#555", mt: 1 }}>
-          Welcome back to the Mount Sinai Radiology Admin Dashboard.
-        </Typography>
-      </Box>
+      {/* ================= BODY AREA (CONDITIONAL) ================= */}
+      {showChat ? (
+        // CHAT MODE (NO duplicate navbar)
+        <AgentChat auth={auth} hideNavbar={true} />
+      ) : (
+        // ADMIN MODE
+        <>
+          {/* GREETING */}
+          <Paper
+            elevation={4}
+            sx={{
+              p: 3,
+              m: "20px auto",
+              maxWidth: 1200,
+              borderRadius: 3,
+              textAlign: "center",
+              background: "rgba(255,255,255,0.6)",
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(255,255,255,0.3)",
+            }}
+          >
+            <Typography variant="h5" sx={{ fontWeight: "bold", color: "#002F6C" }}>
+              {getGreeting()}, {auth?.firstName} {auth?.lastName}!
+            </Typography>
+            <Typography sx={{ color: "#555" }}>
+              Welcome back to your Radiology Admin Dashboard.
+            </Typography>
+          </Paper>
 
-      {/* MAIN CONTENT */}
-      <Box sx={{ px: 4, pb: 6 }}>
-        <Grid container spacing={4} justifyContent="center">
-          {/* ====================== UPLOAD CARD ====================== */}
-          <Grid item xs={12} md={4}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                textAlign: "center",
-                height: 350,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-              elevation={4}
-            >
-              <Typography variant="h6" sx={{ color: "#002F6C", fontWeight: 600 }}>
-                Upload Protocol Files
-              </Typography>
-
-              {/* TYPE DROPDOWN */}
-              <FormControl fullWidth>
-                <InputLabel>Type</InputLabel>
-                <Select
-                  value={fileType}
-                  label="Type"
-                  onChange={(e) => setFileType(e.target.value)}
-                >
-                  <MenuItem value="Locations/Rooms">Locations / Rooms</MenuItem>
-                  <MenuItem value="General Tips">General Tips</MenuItem>
-                  <MenuItem value="Preps">Preps</MenuItem>
-                  <MenuItem value="Other">Other</MenuItem>
-                </Select>
-              </FormControl>
-
-              {/* EXTENSION DROPDOWN */}
-              <FormControl fullWidth>
-                <InputLabel>File Extension</InputLabel>
-                <Select
-                  value={fileExtension}
-                  label="File Extension"
-                  onChange={(e) => setFileExtension(e.target.value)}
-                >
-                  <MenuItem value="pdf">PDF</MenuItem>
-                  <MenuItem value="docx">Word (.docx)</MenuItem>
-                  <MenuItem value="csv">CSV</MenuItem>
-                  <MenuItem value="xlsx">Excel (.xlsx)</MenuItem>
-                  <MenuItem value="md">Markdown (.md)</MenuItem>
-                </Select>
-              </FormControl>
-
-              {/* SELECT FILE */}
-              <Button
-                variant="contained"
-                component="label"
-                disabled={!fileType || !fileExtension}
-                sx={{
-                  fontWeight: "bold",
-                  background:
-                    fileType && fileExtension
-                      ? "linear-gradient(90deg, #002F6C, #642F6C)"
-                      : "#ccc",
-                  "&:hover": {
-                    background:
-                      fileType && fileExtension
-                        ? "linear-gradient(90deg, #E41C77, #00ADEF)"
-                        : "#ccc",
-                  },
-                }}
-              >
-                Select File
-                <input
-                  hidden
-                  type="file"
-                  accept={`.${fileExtension}`}
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (!file) return;
-
-                    setSelectedFile(file);
-                    e.target.value = "";
+          {/* MAIN CONTENT */}
+          <Box sx={{ px: 4, pb: 6 }}>
+            <Grid container spacing={4} justifyContent="center">
+              {/* ================= UPLOAD CARD ================= */}
+              <Grid item xs={12} md={4}>
+                <Paper
+                  elevation={6}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    background: "white",
+                    height: 360,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
                   }}
-                />
-              </Button>
-
-              {/* FILE PREVIEW + SUBMIT */}
-              {selectedFile && (
-                <Box sx={{ mt: 1 }}>
-                  <Typography sx={{ fontSize: 14 }}>
-                    <strong>Selected:</strong> {selectedFile.name}
+                >
+                  <Typography variant="h6" sx={{ color: "#002F6C", fontWeight: 600 }}>
+                    Upload Protocol Files
                   </Typography>
 
+                  <FormControl fullWidth>
+                    <InputLabel>Type</InputLabel>
+                    <Select
+                      value={fileType}
+                      label="Type"
+                      onChange={(e) => setFileType(e.target.value)}
+                    >
+                      <MenuItem value="Locations/Rooms">Locations / Rooms</MenuItem>
+                      <MenuItem value="General Tips">General Tips</MenuItem>
+                      <MenuItem value="Preps">Preps</MenuItem>
+                      <MenuItem value="Other">Other</MenuItem>
+                    </Select>
+                  </FormControl>
+
+                  <FormControl fullWidth>
+                    <InputLabel>File Extension</InputLabel>
+                    <Select
+                      value={fileExtension}
+                      label="File Extension"
+                      onChange={(e) => setFileExtension(e.target.value)}
+                    >
+                      <MenuItem value="pdf">PDF</MenuItem>
+                      <MenuItem value="docx">Word (.docx)</MenuItem>
+                      <MenuItem value="csv">CSV</MenuItem>
+                      <MenuItem value="xlsx">Excel (.xlsx)</MenuItem>
+                      <MenuItem value="md">Markdown (.md)</MenuItem>
+                    </Select>
+                  </FormControl>
+
                   <Button
-                    fullWidth
+                    variant="contained"
+                    component="label"
+                    disabled={!fileType || !fileExtension}
                     sx={{
-                      mt: 1,
+                      fontWeight: 600,
+                      background:
+                        fileType && fileExtension
+                          ? "linear-gradient(90deg, #002F6C, #642F6C)"
+                          : "#ccc",
+                    }}
+                  >
+                    Select File
+                    <input
+                      hidden
+                      type="file"
+                      accept={`.${fileExtension}`}
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setSelectedFile(file);
+                        e.target.value = "";
+                      }}
+                    />
+                  </Button>
+
+                  {selectedFile && (
+                    <>
+                      <Typography>
+                        <strong>Selected:</strong> {selectedFile.name}
+                      </Typography>
+
+                      <Button
+                        fullWidth
+                        sx={{
+                          fontWeight: "bold",
+                          background: "linear-gradient(90deg, #E41C77, #00ADEF)",
+                          color: "white",
+                        }}
+                        onClick={() => {
+                          handleUploadBackend(selectedFile);
+
+                          setFiles((prev) => [
+                            ...prev,
+                            {
+                              name: selectedFile.name,
+                              category: fileType,
+                              type: "protocol",
+                              url: URL.createObjectURL(selectedFile),
+                            },
+                          ]);
+
+                          setSelectedFile(null);
+                          setFileType("");
+                          setFileExtension("");
+                        }}
+                      >
+                        Submit to Knowledge Base
+                      </Button>
+                    </>
+                  )}
+                </Paper>
+              </Grid>
+
+              {/* ================= NOTES CARD ================= */}
+              <Grid item xs={12} md={4}>
+                <Paper
+                  elevation={6}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    background: "white",
+                    height: 360,
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
+                  <Typography variant="h6" sx={{ color: "#002F6C", fontWeight: 600 }}>
+                    Add / Edit Policy Notes
+                  </Typography>
+
+                  <TextField
+                    label="Title"
+                    fullWidth
+                    value={noteTitle}
+                    onChange={(e) => setNoteTitle(e.target.value)}
+                  />
+
+                  <TextField
+                    fullWidth
+                    rows={2}
+                    multiline
+                    placeholder="Enter note..."
+                    value={noteContent}
+                    onChange={(e) => setNoteContent(e.target.value)}
+                  />
+
+                  <Button
+                    sx={{
+                      mt: "auto",
                       fontWeight: "bold",
                       color: "white",
                       background: "linear-gradient(90deg, #E41C77, #00ADEF)",
-                      "&:hover": {
-                        background: "linear-gradient(90deg, #002F6C, #642F6C)",
-                      },
                     }}
-                    onClick={() => {
-                      handleUploadBackend(selectedFile);
-
-                      setFiles((prev) => [
-                        ...prev,
-                        {
-                          name: selectedFile.name,
-                          category: fileType,
-                          type: "protocol",
-                          url: URL.createObjectURL(selectedFile),
-                        },
-                      ]);
-
-                      // RESET UI
-                      setSelectedFile(null);
-                      setFileType("");
-                      setFileExtension("");
-                    }}
+                    onClick={handleAddPolicy}
                   >
-                    Submit to Knowledge Base
+                    Save Policy
                   </Button>
-                </Box>
-              )}
-            </Paper>
-          </Grid>
+                </Paper>
+              </Grid>
 
-          {/* ====================== NOTES CARD ====================== */}
-          <Grid item xs={12} md={4}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                textAlign: "center",
-                height: 350,
-                display: "flex",
-                flexDirection: "column",
-              }}
-              elevation={4}
-            >
-              <Typography variant="h6" sx={{ color: "#002F6C", fontWeight: 600 }}>
-                Add / Edit Policy Notes
-              </Typography>
+              {/* ================= UPLOADED FILES ================= */}
+              <Grid item xs={12} md={4}>
+                <Paper
+                  elevation={6}
+                  sx={{
+                    p: 3,
+                    borderRadius: 3,
+                    height: 360,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{ color: "#002F6C", fontWeight: 600, textAlign: "center" }}
+                  >
+                    Uploaded Policies
+                  </Typography>
 
-              <TextField
-                label="Title"
-                fullWidth
-                margin="normal"
-                value={noteTitle}
-                onChange={(e) => setNoteTitle(e.target.value)}
-              />
-              <TextField
-                fullWidth
-                multiline
-                rows={2}
-                placeholder="Enter note..."
-                value={noteContent}
-                onChange={(e) => setNoteContent(e.target.value)}
-              />
-
-              <Button
-                sx={{
-                  mt: 2,
-                  fontWeight: "bold",
-                  color: "white",
-                  background: "linear-gradient(90deg, #E41C77, #00ADEF)",
-                  "&:hover": {
-                    background: "linear-gradient(90deg, #002F6C, #642F6C)",
-                  },
-                }}
-                onClick={handleAddPolicy}
-              >
-                Save Policy
-              </Button>
-            </Paper>
-          </Grid>
-
-          {/* ====================== UPLOADED POLICIES ====================== */}
-          <Grid item xs={12} md={4}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: 3,
-                height: 350,
-                display: "flex",
-                flexDirection: "column",
-              }}
-              elevation={4}
-            >
-              <Typography
-                variant="h6"
-                sx={{ color: "#002F6C", fontWeight: 600, textAlign: "center" }}
-              >
-                Uploaded Policies
-              </Typography>
-
-              <TableContainer sx={{ flexGrow: 1, overflowY: "auto", mt: 1 }}>
-                <Table size="small">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell sx={{ fontWeight: 600, color: "#002F6C" }}>
-                        Policy / File
-                      </TableCell>
-                      <TableCell
-                        sx={{ fontWeight: 600, color: "#002F6C" }}
-                        align="right"
-                      >
-                        Actions
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-
-                  <TableBody>
-                    {files.length ? (
-                      files.map((file, idx) => (
-                        <TableRow key={idx}>
-                          <TableCell>
-                            {file.name}
-
-                            <Chip
-                              label={file.type === "note" ? "Note" : "Protocol"}
-                              size="small"
-                              sx={{
-                                ml: 1,
-                                color: "white",
-                                fontWeight: 600,
-                                background:
-                                  file.type === "note"
-                                    ? "#E41C77"
-                                    : "#002F6C",
-                              }}
-                            />
-
-                            {file.category && (
-                              <Chip
-                                label={file.category}
-                                size="small"
-                                sx={{
-                                  ml: 1,
-                                  background: "#00ADEF",
-                                  color: "white",
-                                  fontWeight: 500,
-                                }}
-                              />
-                            )}
-                          </TableCell>
-
-                          <TableCell align="right">
-                            <IconButton
-                              color="primary"
-                              onClick={() => handleView(file.url)}
-                            >
-                              <VisibilityIcon />
-                            </IconButton>
-
-                            <IconButton
-                              color="error"
-                              onClick={() => {
-                                setFileToDelete(file.name);
-                                setOpenConfirm(true);
-                              }}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
+                  <TableContainer sx={{ flexGrow: 1, mt: 1 }}>
+                    <Table size="small">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell sx={{ fontWeight: 600 }}>Policy / File</TableCell>
+                          <TableCell align="right" sx={{ fontWeight: 600 }}>
+                            Actions
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell colSpan={2} align="center" sx={{ color: "#777" }}>
-                          No files uploaded yet
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                      </TableHead>
+                      <TableBody>
+                        {files.length ? (
+                          files.map((file, idx) => (
+                            <TableRow key={idx}>
+                              <TableCell>
+                                {file.name}
+                                <Chip
+                                  label={file.type === "note" ? "Note" : "Protocol"}
+                                  size="small"
+                                  sx={{
+                                    ml: 1,
+                                    fontWeight: 600,
+                                    color: "white",
+                                    background:
+                                      file.type === "note" ? "#E41C77" : "#002F6C",
+                                  }}
+                                />
+                                {file.category && (
+                                  <Chip
+                                    label={file.category}
+                                    size="small"
+                                    sx={{
+                                      ml: 1,
+                                      background: "#00ADEF",
+                                      color: "white",
+                                    }}
+                                  />
+                                )}
+                              </TableCell>
 
-              {/* RESET INDEX BUTTON */}
+                              <TableCell align="right">
+                                <IconButton
+                                  color="primary"
+                                  onClick={() => handleView(file.url)}
+                                >
+                                  <VisibilityIcon />
+                                </IconButton>
+
+                                <IconButton
+                                  color="error"
+                                  onClick={() => {
+                                    setFileToDelete(file.name);
+                                    setOpenConfirm(true);
+                                  }}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          ))
+                        ) : (
+                          <TableRow>
+                            <TableCell colSpan={2} align="center">
+                              No files uploaded yet.
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+
+                  <Button
+                    sx={{
+                      mt: 2,
+                      fontWeight: "bold",
+                      background: "linear-gradient(90deg, #E41C77, #00ADEF)",
+                      color: "white",
+                    }}
+                    onClick={handleResetIndex}
+                  >
+                    Reset Knowledge Base
+                  </Button>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Box>
+
+          {/* ================= DELETE CONFIRM MODAL ================= */}
+          <Dialog
+            open={openConfirm}
+            TransitionComponent={Transition}
+            keepMounted
+            onClose={() => setOpenConfirm(false)}
+            PaperProps={{ sx: { borderRadius: 3, p: 1 } }}
+          >
+            <DialogTitle sx={{ fontWeight: "bold" }}>
+              Confirm Deletion
+            </DialogTitle>
+            <DialogContent>
+              <Typography>
+                Are you sure you want to delete{" "}
+                <strong>{fileToDelete}</strong>?
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={() => setOpenConfirm(false)}>Cancel</Button>
               <Button
-                fullWidth
                 sx={{
-                  mt: 2,
-                  fontWeight: "bold",
+                  background: "linear-gradient(90deg,#E41C77,#00ADEF)",
                   color: "white",
-                  background: "linear-gradient(90deg, #E41C77, #00ADEF)",
+                  fontWeight: "bold",
                 }}
-                onClick={handleResetIndex}
+                onClick={confirmDelete}
               >
-                Reset Knowledge Base
+                Delete
               </Button>
-            </Paper>
-          </Grid>
-        </Grid>
+            </DialogActions>
+          </Dialog>
 
-        {/* CONFIRM DELETE */}
-        <Dialog
-          open={openConfirm}
-          TransitionComponent={Transition}
-          keepMounted
-          onClose={() => setOpenConfirm(false)}
-          PaperProps={{ sx: { borderRadius: 3, p: 1, boxShadow: 6 } }}
-        >
-          <DialogTitle sx={{ fontWeight: "bold" }}>
-            Confirm Deletion
-          </DialogTitle>
-          <DialogContent>
-            <Typography>
-              Are you sure you want to delete{" "}
-              <strong>{fileToDelete}</strong>?
-            </Typography>
-          </DialogContent>
-
-          <DialogActions>
-            <Button
-              sx={{ color: "#002F6C", fontWeight: 600 }}
-              onClick={() => setOpenConfirm(false)}
-            >
-              Cancel
-            </Button>
-            <Button
-              sx={{
-                background: "linear-gradient(90deg, #E41C77, #00ADEF)",
-                color: "white",
-                fontWeight: "bold",
-                "&:hover": {
-                  background: "linear-gradient(90deg, #002F6C, #642F6C)",
-                },
-              }}
-              onClick={confirmDelete}
-            >
-              Delete
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        {/* ALERTS */}
-        <Snackbar
-          open={alert.open}
-          autoHideDuration={4000}
-          onClose={() => setAlert({ ...alert, open: false })}
-        >
-          <Alert severity={alert.type} sx={{ width: "100%" }}>
-            {alert.msg}
-          </Alert>
-        </Snackbar>
-      </Box>
+          {/* ================= ALERT ================= */}
+          <Snackbar
+            open={alert.open}
+            autoHideDuration={4000}
+            onClose={() => setAlert({ ...alert, open: false })}
+          >
+            <Alert severity={alert.type}>{alert.msg}</Alert>
+          </Snackbar>
+        </>
+      )}
     </Box>
   );
 }

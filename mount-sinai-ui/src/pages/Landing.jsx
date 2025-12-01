@@ -8,15 +8,17 @@ export default function Landing() {
 
   return (
     <Box
+      className="auth-wrapper"
       sx={{
         height: "100vh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "linear-gradient(135deg, #F5F6FA, #E3F2FD)",
+        // ❌ removed background here so global.css background shows
       }}
     >
       <Paper
+        className="auth-card"
         component={motion.div}
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -27,10 +29,10 @@ export default function Landing() {
           borderRadius: 4,
           textAlign: "center",
           maxWidth: 500,
-          background: "white",
+          // glass style is handled in global.css
         }}
       >
-        {/* ✅ Mount Sinai Logo */}
+        {/* Mount Sinai Logo */}
         <Box
           component="img"
           src={MSLogo}
@@ -49,7 +51,6 @@ export default function Landing() {
             mb: 2,
             fontWeight: 700,
             color: "#002F6C",
-            fontFamily: "Poppins, sans-serif",
           }}
         >
           Welcome to Mount Sinai Radiology Assistant
@@ -58,53 +59,43 @@ export default function Landing() {
         <Typography
           variant="body1"
           color="text.secondary"
-          sx={{ mb: 4, fontFamily: "Poppins, sans-serif" }}
+          sx={{ mb: 4 }}
         >
           Please log in to get started and access your radiology resources.
         </Typography>
 
+        {/* BUTTON WRAPPER */}
         <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-          {/* Login Button */}
-            <Button
-            variant="contained"
-            sx={{
-                px: 4,
-                borderRadius: 2,
-                fontWeight: 600,
-                color: "white",
-                background: "linear-gradient(90deg, #002F6C, #642F6C)",
-                transition: "all 0.3s ease",
-                "&:hover": {
-                background: "linear-gradient(90deg, #E41C77, #00ADEF)",
-                transform: "scale(1.05)",
-                },
-            }}
+          {/* Login */}
+          <Button
+            className="ms-btn-main"
             onClick={() => navigate("/login")}
-            >
+          >
             LOGIN
-            </Button>
+          </Button>
 
-            {/* Signup Button */}
-            <Button
+          {/* Signup */}
+          <Button
             variant="outlined"
             sx={{
-                px: 4,
-                borderRadius: 2,
-                fontWeight: 600,
-                color: "#002F6C",
-                borderColor: "#002F6C",
-                transition: "all 0.3s ease",
-                "&:hover": {
+              px: 4,
+              borderRadius: 2,
+              fontWeight: 600,
+              color: "#002F6C",
+              borderColor: "#002F6C",
+              transition: "all 0.3s ease",
+              "&:hover": {
                 color: "white",
                 borderColor: "transparent",
-                background: "linear-gradient(90deg, #00ADEF, #E41C77)",
+                background:
+                  "linear-gradient(90deg, #00ADEF, #E41C77)",
                 transform: "scale(1.05)",
-                },
+              },
             }}
             onClick={() => navigate("/signup")}
-            >
+          >
             SIGN UP
-            </Button>
+          </Button>
         </Box>
       </Paper>
     </Box>

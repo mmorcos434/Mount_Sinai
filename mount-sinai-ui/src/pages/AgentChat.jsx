@@ -16,13 +16,13 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
-import MSLogo from "../assets/MSLogo.png";
+import MSLogoWhite from "../assets/MSLogoWhite.png";
 
-// Simple ID helper
+// Helper to create unique IDs
 const makeId = () =>
   window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random()}`;
 
-// Generate summarized chat title
+// Create a short chat title from user text
 const generateTitleFromText = (text, mode) => {
   if (!text) {
     return mode === "schedule" ? "Scheduling Chat" : "Document Q&A Chat";
@@ -35,11 +35,10 @@ const generateTitleFromText = (text, mode) => {
   title = title.replace(/[?!.:,;]+$/, "");
   title = title.charAt(0).toUpperCase() + title.slice(1);
   if (words.length > maxWords) title += "…";
-
   return title;
 };
 
-function AgentChat({ auth }) {
+function AgentChat({ auth, hideNavbar = false }) {
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
 
@@ -49,21 +48,19 @@ function AgentChat({ auth }) {
   const [input, setInput] = useState("");
   const [greeting, setGreeting] = useState("");
 
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-
-  // Greeting
+  // -------------------------------
+  // GREETING
+  // -------------------------------
   useEffect(() => {
     const hour = new Date().getHours();
     setGreeting(
-      hour < 12
-        ? "Good morning"
-        : hour < 18
-        ? "Good afternoon"
-        : "Good evening"
+      hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening"
     );
   }, []);
 
-  // Load chats
+  // -------------------------------
+  // LOAD CHATS FROM LOCAL STORAGE
+  // -------------------------------
   useEffect(() => {
     try {
       const stored = localStorage.getItem("msAgentChats_v1");
@@ -78,13 +75,17 @@ function AgentChat({ auth }) {
       }
     } catch {}
 
+    // Default chats
     const scheduleChat = {
       id: makeId(),
       mode: "schedule",
       title: "Scheduling Chat",
       createdAt: new Date().toISOString(),
       messages: [
-        { sender: "bot", text: "Welcome to the Mount Sinai Radiology Assistant. How can I help you today?" },
+        {
+          sender: "bot",
+          text: "Welcome to the Mount Sinai Radiology Assistant. How can I help you today?",
+        },
       ],
     };
 
@@ -93,16 +94,16 @@ function AgentChat({ auth }) {
       mode: "rag",
       title: "Document Q&A Chat",
       createdAt: new Date().toISOString(),
-      messages: [
-        { sender: "bot", text: "Document Q&A Mode enabled. Ask about uploaded files." },
-      ],
+      messages: [{ sender: "bot", text: "Document Q&A Mode enabled. Ask about uploaded files." }],
     };
 
     setChats([scheduleChat, ragChat]);
     setCurrentChatId(scheduleChat.id);
   }, []);
 
-  // Save chats
+  // -------------------------------
+  // SAVE CHATS TO LOCAL STORAGE
+  // -------------------------------
   useEffect(() => {
     if (!chats.length) return;
     localStorage.setItem(
@@ -111,10 +112,23 @@ function AgentChat({ auth }) {
     );
   }, [chats, currentChatId, mode]);
 
-  // Auto-scroll
+  // -------------------------------
+  // AUTO SCROLL WHEN MESSAGES UPDATE
+  // -------------------------------
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chats, currentChatId]);
+
+  // -------------------------------
+  // DELAYED SCROLL WHEN CHAT INITIALLY OPENS
+  // (Fixes issue when switching from admin → chat)
+  // -------------------------------
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, []);
 
   const scheduleChats = chats.filter((c) => c.mode === "schedule");
   const ragChats = chats.filter((c) => c.mode === "rag");
@@ -125,14 +139,13 @@ function AgentChat({ auth }) {
     ragChats[0] ||
     null;
 
+  // Sync mode to selected chat
   useEffect(() => {
     if (currentChat && currentChat.mode !== mode) {
       setMode(currentChat.mode);
     }
   }, [currentChat]);
 
-
-  // 🔥🔥🔥 SAFETY FIX: Prevent blank screen crash
   if (!currentChat) {
     return (
       <Box sx={{ p: 5, textAlign: "center", fontSize: 20 }}>
@@ -140,10 +153,10 @@ function AgentChat({ auth }) {
       </Box>
     );
   }
-  // 🔥🔥🔥 END FIX
 
-
-  // Backend call
+  // -------------------------------
+  // BACKEND CALL
+  // -------------------------------
   const sendToBackend = async (question, activeMode) => {
     try {
       const endpoint =
@@ -169,12 +182,17 @@ function AgentChat({ auth }) {
     }
   };
 
-  // Create new chat
+  // -------------------------------
+  // NEW CHATS, SELECT CHAT, DELETE CHAT
+  // -------------------------------
   const createNewChat = (chatMode) => {
     const newChat = {
       id: makeId(),
       mode: chatMode,
-      title: chatMode === "schedule" ? "New Scheduling Chat" : "New Document Q&A Chat",
+      title:
+        chatMode === "schedule"
+          ? "New Scheduling Chat"
+          : "New Document Q&A Chat",
       createdAt: new Date().toISOString(),
       messages: [
         {
@@ -193,7 +211,6 @@ function AgentChat({ auth }) {
     setInput("");
   };
 
-  // Delete chat
   const handleDeleteChat = (e, chatId) => {
     e.stopPropagation();
 
@@ -207,18 +224,21 @@ function AgentChat({ auth }) {
           title: "Scheduling Chat",
           createdAt: new Date().toISOString(),
           messages: [
-            { sender: "bot", text: "Welcome to the Mount Sinai Radiology Assistant. How can I help you today?" },
+            {
+              sender: "bot",
+              text: "Welcome to the Mount Sinai Radiology Assistant. How can I help you today?",
+            },
           ],
         };
+
         const ragChat = {
           id: makeId(),
           mode: "rag",
           title: "Document Q&A Chat",
           createdAt: new Date().toISOString(),
-          messages: [
-            { sender: "bot", text: "Document Q&A Mode enabled. Ask about uploaded files." },
-          ],
+          messages: [{ sender: "bot", text: "Document Q&A Mode enabled. Ask about uploaded files." }],
         };
+
         setCurrentChatId(scheduleChat.id);
         setMode("schedule");
         return [scheduleChat, ragChat];
@@ -235,7 +255,6 @@ function AgentChat({ auth }) {
     });
   };
 
-  // Select chat
   const handleSelectChat = (chatId) => {
     const chat = chats.find((c) => c.id === chatId);
     if (!chat) return;
@@ -244,7 +263,9 @@ function AgentChat({ auth }) {
     setInput("");
   };
 
-  // Send message
+  // -------------------------------
+  // SEND MESSAGE
+  // -------------------------------
   const handleSend = async () => {
     if (!input.trim() || !currentChat) return;
 
@@ -286,9 +307,9 @@ function AgentChat({ auth }) {
     );
   };
 
-  const displayedMessages = currentChat?.messages || [];
-
-  // Clean markdown-style bold (**text**)
+  // -------------------------------
+  // FORMAT OUTPUT
+  // -------------------------------
   const stripMd = (t) => t.replace(/\*\*(.*?)\*\*/g, "$1");
 
   const formatMessage = (text) => {
@@ -312,192 +333,218 @@ function AgentChat({ auth }) {
     return <span>{text}</span>;
   };
 
+  // -------------------------------
+  // UI LAYOUT
+  // -------------------------------
   return (
-    <Box sx={{ bgcolor: "#F7F9FC", minHeight: "100vh" }}>
-      <AppBar position="static" sx={{ bgcolor: "#002F6C" }}>
-        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-          <Box display="flex" alignItems="center" gap={1.5}>
-            <img src={MSLogo} alt="Mount Sinai" width={42} />
-            <Typography variant="h6" fontWeight="bold">
-              Mount Sinai Radiology Agent Portal
-            </Typography>
-          </Box>
+    <Box sx={{ bgcolor: "transparent", minHeight: "100vh" }}>
 
-          <Box display="flex" alignItems="center" gap={2}>
-            <Typography sx={{ color: "white" }}>
-              {auth?.firstName} {auth?.lastName}
-            </Typography>
-            <Button
-              variant="outlined"
-              sx={{ color: "white", borderColor: "white" }}
-              onClick={() => navigate("/login")}
-            >
-              LOGOUT
-            </Button>
-          </Box>
-        </Toolbar>
-      </AppBar>
+      {/* TOP NAVBAR (HIDDEN IN ADMIN EMBED MODE) */}
+      {!hideNavbar && (
+        <AppBar
+          position="static"
+          sx={{
+            bgcolor: "var(--ms-blue)",
+            boxShadow: "0 4px 14px rgba(0,0,0,0.15)",
+          }}
+        >
+          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Box display="flex" alignItems="center" gap={1.5}>
+              <img src={MSLogoWhite} alt="Mount Sinai" width={42} />
+              <Typography variant="h6" fontWeight="bold">
+                Mount Sinai Radiology Agent Portal
+              </Typography>
+            </Box>
+
+            <Box display="flex" alignItems="center" gap={2}>
+              <Typography sx={{ color: "white" }}>
+                {auth?.firstName} {auth?.lastName}
+              </Typography>
+              <Button
+                variant="outlined"
+                sx={{ color: "white", borderColor: "white" }}
+                onClick={() => navigate("/login")}
+              >
+                LOGOUT
+              </Button>
+            </Box>
+          </Toolbar>
+        </AppBar>
+      )}
 
       {/* GREETING */}
-      <Box
+      <Paper
+        elevation={4}
         sx={{
-          background: "linear-gradient(135deg,#E6F0FA,#FFF)",
-          m: 4,
-          p: 3,
+          p: 2,
+          m: "16px auto",
+          maxWidth: 1400,
           borderRadius: 3,
           textAlign: "center",
-          boxShadow: 2,
+          background: "rgba(255,255,255,0.55)",
+          backdropFilter: "blur(12px)",
+          border: "1px solid rgba(255,255,255,0.25)",
         }}
       >
-        <Typography variant="h5" sx={{ fontWeight: "bold", color: "#002F6C" }}>
+        <Typography variant="h5" sx={{ fontWeight: "bold", color: "var(--ms-blue)" }}>
           {`${greeting}, ${auth?.firstName} ${auth?.lastName}!`}
         </Typography>
         <Typography sx={{ color: "#555" }}>
           Welcome back to your Radiology Chat Assistant Dashboard.
         </Typography>
-      </Box>
+      </Paper>
 
-      {/* LAYOUT */}
-      <Box sx={{ display: "flex", px: 4, pb: 6, gap: 3 }}>
-        {/* Sidebar */}
-        {sidebarOpen && (
-          <Paper
-            elevation={4}
-            sx={{
-              width: 260,
-              p: 2,
-              borderRadius: 3,
-              display: "flex",
-              flexDirection: "column",
-              maxHeight: "75vh",
-            }}
-          >
-            <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
-              <Button
-                onClick={() => setSidebarOpen(false)}
-                sx={{
-                  minWidth: 0,
-                  width: 32,
-                  height: 32,
-                  borderRadius: "50%",
-                  color: "white",
-                  backgroundColor: "#002F6C",
-                }}
-              >
-                ⟨
-              </Button>
-            </Box>
+      {/* MAIN CONTENT */}
+      <Box
+        sx={{
+          display: "flex",
+          px: 2,
+          pb: 3,
+          gap: 2,
+          width: "100%",
+          maxWidth: "1600px",
+          margin: "0 auto",
+        }}
+      >
 
-            <Typography sx={{ fontWeight: 600, mb: 1, color: "#002F6C" }}>
-              Chats
-            </Typography>
-
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => createNewChat("schedule")}
-              sx={{
-                mb: 1,
-                borderRadius: 2,
-                textTransform: "none",
-                background: "linear-gradient(90deg,#002F6C,#642F6C)",
-              }}
-            >
-              + New Scheduling Chat
-            </Button>
-
-            <Button
-              variant="contained"
-              size="small"
-              onClick={() => createNewChat("rag")}
-              sx={{
-                mb: 2,
-                borderRadius: 2,
-                textTransform: "none",
-                background: "linear-gradient(90deg,#666,#999)",
-              }}
-            >
-              + New Document Q&A
-            </Button>
-
-            <Typography variant="overline">Scheduling</Typography>
-            <List dense>
-              {scheduleChats.map((chat) => (
-                <ListItemButton
-                  key={chat.id}
-                  selected={chat.id === currentChatId}
-                  onClick={() => handleSelectChat(chat.id)}
-                >
-                  <ListItemText primary={chat.title} />
-                  <IconButton onClick={(e) => handleDeleteChat(e, chat.id)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </ListItemButton>
-              ))}
-            </List>
-
-            <Divider sx={{ my: 1 }} />
-
-            <Typography variant="overline">Document Q&A</Typography>
-            <List dense>
-              {ragChats.map((chat) => (
-                <ListItemButton
-                  key={chat.id}
-                  selected={chat.id === currentChatId}
-                  onClick={() => handleSelectChat(chat.id)}
-                >
-                  <ListItemText primary={chat.title} />
-                  <IconButton onClick={(e) => handleDeleteChat(e, chat.id)}>
-                    <DeleteIcon fontSize="small" />
-                  </IconButton>
-                </ListItemButton>
-              ))}
-            </List>
-          </Paper>
-        )}
-
-        {!sidebarOpen && (
-          <Button
-            onClick={() => setSidebarOpen(true)}
-            sx={{
-              minWidth: 0,
-              mt: 2,
-              width: 36,
-              height: 36,
-              borderRadius: "50%",
-              backgroundColor: "#002F6C",
-              color: "white",
-            }}
-          >
-            ⟩
-          </Button>
-        )}
-
-        {/* CHAT PANEL */}
+        {/* LEFT SIDEBAR */}
         <Paper
           elevation={6}
           sx={{
-            p: 3,
-            flex: 1,
-            height: "75vh",
+            width: "260px",
+            p: 2,
             borderRadius: 3,
             display: "flex",
             flexDirection: "column",
+            maxHeight: "63vh",
+            overflowY: "auto",
+            position: "sticky",
+            top: "20px",
+            background: "rgba(255,255,255,0.65)",
+            backdropFilter: "blur(14px)",
+            border: "1px solid rgba(255,255,255,0.25)",
           }}
         >
+
+          <Typography sx={{ fontWeight: 600, mb: 1, color: "var(--ms-blue)" }}>
+            Chats
+          </Typography>
+
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => createNewChat("schedule")}
+            sx={{
+              mb: 1,
+              borderRadius: 2,
+              textTransform: "none",
+              background: "linear-gradient(90deg,#002F6C,#642F6C)",
+            }}
+          >
+            + New Scheduling Chat
+          </Button>
+
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => createNewChat("rag")}
+            sx={{
+              mb: 2,
+              borderRadius: 2,
+              textTransform: "none",
+              background: "linear-gradient(90deg,#888,#bbb)",
+            }}
+          >
+            + New Document Q&A
+          </Button>
+
+          {/* Scheduling Chats */}
+          <Typography variant="overline">Scheduling</Typography>
+          <List dense>
+            {scheduleChats.map((chat) => (
+              <ListItemButton
+                key={chat.id}
+                selected={chat.id === currentChatId}
+                onClick={() => handleSelectChat(chat.id)}
+                sx={{
+                  borderRadius: 2,
+                  mb: 0.5,
+                  "&.Mui-selected": {
+                    background: "rgba(0,47,108,0.15)",
+                  },
+                }}
+              >
+                <ListItemText primary={chat.title} />
+                <IconButton onClick={(e) => handleDeleteChat(e, chat.id)}>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </ListItemButton>
+            ))}
+          </List>
+
+          <Divider sx={{ my: 1 }} />
+
+          {/* Document Q&A Chat List */}
+          <Typography variant="overline">Document Q&A</Typography>
+          <List dense>
+            {ragChats.map((chat) => (
+              <ListItemButton
+                key={chat.id}
+                selected={chat.id === currentChatId}
+                onClick={() => handleSelectChat(chat.id)}
+                sx={{
+                  borderRadius: 2,
+                  mb: 0.5,
+                  "&.Mui-selected": { background: "rgba(0,47,108,0.15)" },
+                }}
+              >
+                <ListItemText primary={chat.title} />
+                <IconButton onClick={(e) => handleDeleteChat(e, chat.id)}>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
+              </ListItemButton>
+            ))}
+          </List>
+        </Paper>
+
+        {/* CHAT WINDOW */}
+        <Paper
+          elevation={6}
+          sx={{
+            flex: 1,
+            p: 2,
+            height: "63vh",
+            borderRadius: 3,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+            background: "rgba(255,255,255,0.7)",
+            backdropFilter: "blur(14px)",
+            border: "1px solid rgba(255,255,255,0.25)",
+          }}
+        >
+
           <Typography
             variant="h6"
-            sx={{ color: "#002F6C", fontWeight: 600, textAlign: "center", mb: 2 }}
+            sx={{
+              color: "var(--ms-blue)",
+              fontWeight: 600,
+              textAlign: "center",
+              mb: 2,
+            }}
           >
             Radiology Assistant Chat
           </Typography>
 
-          {/* Messages */}
-          <List sx={{ flexGrow: 1, overflowY: "auto" }}>
-            {displayedMessages.map((msg, i) => (
+          {/* Chat Messages */}
+          <List sx={{ flexGrow: 1, overflowY: "auto", pr: 1 }}>
+            {currentChat.messages.map((msg, i) => (
               <ListItem
                 key={i}
-                sx={{ justifyContent: msg.sender === "agent" ? "flex-end" : "flex-start" }}
+                sx={{
+                  justifyContent:
+                    msg.sender === "agent" ? "flex-end" : "flex-start",
+                }}
               >
                 <ListItemText
                   primary={formatMessage(msg.text)}
@@ -509,11 +556,12 @@ function AgentChat({ auth }) {
                     borderRadius: 2,
                     bgcolor:
                       msg.sender === "agent"
-                        ? "#002F6C"
+                        ? "var(--ms-blue)"
                         : currentChat.mode === "rag"
                         ? "#FFF8E1"
                         : "#E8F0FE",
-                    color: msg.sender === "agent" ? "white" : "#002F6C",
+                    color: msg.sender === "agent" ? "white" : "var(--ms-blue)",
+                    whiteSpace: "pre-wrap",
                   }}
                 />
               </ListItem>
@@ -521,8 +569,8 @@ function AgentChat({ auth }) {
             <div ref={messagesEndRef} />
           </List>
 
-          {/* Input */}
-          <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
+          {/* Chat Input */}
+          <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
             <TextField
               fullWidth
               placeholder={
@@ -533,13 +581,19 @@ function AgentChat({ auth }) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
+              sx={{
+                background: "white",
+                borderRadius: 2,
+              }}
             />
+
             <Button
               variant="contained"
               sx={{
                 px: 4,
                 borderRadius: 2,
-                background: "linear-gradient(90deg,#E41C77,#00ADEF)",
+                background: "linear-gradient(90deg,var(--ms-pink),var(--ms-cyan))",
+                fontWeight: 600,
               }}
               onClick={handleSend}
             >

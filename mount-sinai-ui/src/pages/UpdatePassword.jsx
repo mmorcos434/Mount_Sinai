@@ -7,8 +7,13 @@ import {
   Typography,
   Paper,
   Alert,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import MSLogo from "../assets/MSLogo.png";
 
 function UpdatePassword() {
   const [password, setPassword] = useState("");
@@ -16,17 +21,18 @@ function UpdatePassword() {
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const navigate = useNavigate();
 
   const test_password = (value) => {
-    //if password doesn't meet any requirements it returns a list of errors
     const newErrors = [];
     if (value.length < 8) newErrors.push("At least 8 characters");
     if (!/[A-Z]/.test(value)) newErrors.push("At least one uppercase letter");
     if (!/[a-z]/.test(value)) newErrors.push("At least one lowercase letter");
     if (!/[0-9]/.test(value)) newErrors.push("At least one number");
-    if (!/[!@#$%^&*]/.test(value)) newErrors.push("At least one special character (!@#$%^&*)");
-
+    if (!/[!@#$%^&*]/.test(value))
+      newErrors.push("At least one special character (!@#$%^&*)");
     return newErrors;
   };
 
@@ -39,7 +45,7 @@ function UpdatePassword() {
 
     if (check_password.length > 0) {
       setError("Password must include: " + check_password.join(", "));
-    return;
+      return;
     }
 
     if (password !== confirm) {
@@ -63,74 +69,135 @@ function UpdatePassword() {
   };
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh",
-        backgroundColor: "#f5f5f5",
-      }}
-    >
+    <Box className="auth-wrapper">
       <Paper
-        elevation={4}
-        sx={{
-          p: 4,
-          width: "100%",
-          maxWidth: 400,
-          textAlign: "center",
-        }}
+        elevation={6}
+        className="auth-card"
+        component={motion.div}
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        sx={{ maxWidth: 450 }}
       >
-        <Typography variant="h5" gutterBottom>
+        <Box
+          component="img"
+          src={MSLogo}
+          alt="Mount Sinai Logo"
+          sx={{
+            width: 130,
+            mb: 2,
+            display: "block",
+            mx: "auto",
+          }}
+        />
+
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            color: "#002F6C",
+            textAlign: "center",
+            mb: 1,
+          }}
+        >
           Set a New Password
         </Typography>
 
-        <Typography variant="body2" sx={{ mb: 3 }}>
+        <Typography
+          sx={{
+            textAlign: "center",
+            color: "#555",
+            mb: 3,
+            fontSize: "0.95rem",
+          }}
+        >
           Enter your new password below to reset your account.
         </Typography>
 
-        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
-        {message && <Alert severity="success" sx={{ mt: 2 }}>{message}</Alert>}
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {message && <Alert severity="success" sx={{ mb: 2 }}>{message}</Alert>}
 
         <form onSubmit={handleUpdate}>
-          <TextField
-            label="New Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <TextField
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={confirm}
-            onChange={(e) => setConfirm(e.target.value)}
-            required
-          />
+          <Box display="flex" flexDirection="column" gap={2.5}>
+            {/* New password with toggle */}
+            <TextField
+              label="New Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              className="auth-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((p) => !p)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
 
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            fullWidth
-            sx={{ mt: 3 }}
-            disabled={loading}
-          >
-            {loading ? "Updating..." : "Update Password"}
-          </Button>
+            {/* Confirm password with toggle */}
+            <TextField
+              label="Confirm Password"
+              type={showConfirm ? "text" : "password"}
+              fullWidth
+              className="auth-input"
+              value={confirm}
+              onChange={(e) => setConfirm(e.target.value)}
+              required
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowConfirm((p) => !p)}
+                        edge="end"
+                      >
+                        {showConfirm ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
 
-          <Button
-            onClick={() => navigate("/login")}
-            color="secondary"
-            fullWidth
-            sx={{ mt: 1 }}
-          >
-            Back to Login
-          </Button>
+            <Button
+              type="submit"
+              fullWidth
+              className="ms-btn-main"
+              disabled={loading}
+              sx={{ py: 1.4 }}
+            >
+              {loading ? "UPDATING..." : "UPDATE PASSWORD"}
+            </Button>
+
+            <Typography
+              sx={{
+                textAlign: "center",
+                mt: -1,
+                fontSize: "0.9rem",
+              }}
+            >
+              <span
+                style={{
+                  color: "#E41C77",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Back to Login
+              </span>
+            </Typography>
+          </Box>
         </form>
       </Paper>
     </Box>

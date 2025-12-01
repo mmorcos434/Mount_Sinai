@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { supabase } from "../api/supabaseClient"; 
+import { supabase } from "../api/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
@@ -9,66 +9,59 @@ import {
   Typography,
   Paper,
   Alert,
-  Link,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
-import MSLogo from "../assets/MSLogo.png"; // ✅ Mount Sinai logo
+import { motion } from "framer-motion";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import MSLogo from "../assets/MSLogo.png";
 
 function Login({ setAuth }) {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+
   const [error, setError] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async ({ email, password }) => {
     setError("");
+    setLoading(true);
 
-    // Sign in with Supabase Auth
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
-  if (signInError) {
+    if (signInError) {
+      if (signInError.code === "email_not_confirmed") {
+        setError("Your email isn’t verified. Please check your inbox.");
 
-    // Detect unverified email
-    if (signInError.code === "email_not_confirmed") {
-      // Always show this
-      setError("Your email isn’t verified. Please check your inbox.");
-
-      // Send verification email only once per session
-      if (!emailSent) {
-        try {
+        if (!emailSent) {
           const { error: resendError } = await supabase.auth.resend({
             type: "signup",
             email,
           });
-
-          if (!resendError) {
-            setEmailSent(true);
-          } else {
-            console.error("Resend error:", resendError.message);
-          }
-        } catch (err) {
-          console.error(err);
+          if (!resendError) setEmailSent(true);
         }
+        setLoading(false);
+        return;
       }
+
+      if (signInError.code === "invalid_credentials") {
+        setError("Incorrect email or password.");
+        setLoading(false);
+        return;
+      }
+
+      setError("Something went wrong. Please try again.");
+      setLoading(false);
       return;
     }
-
-    // Wrong email or password
-    if (signInError.code === "invalid_credentials") {
-      setError("Incorrect email or password.");
-      return;
-    }
-
-    // Fallback for unexpected errors
-    setError("Something went wrong. Please try again.");
-    return;
-  }
 
     const user = data.user;
 
-    // Fetch role and name from your users table
     const { data: userData, error: userError } = await supabase
       .from("users")
       .select("role, first_name, last_name")
@@ -77,10 +70,10 @@ function Login({ setAuth }) {
 
     if (userError || !userData) {
       setError("Unable to find user information. Please contact support.");
+      setLoading(false);
       return;
     }
 
-    // Store everything in app state
     setAuth({
       isLoggedIn: true,
       role: userData.role,
@@ -88,7 +81,6 @@ function Login({ setAuth }) {
       lastName: userData.last_name,
     });
 
-    // ✅ Save to sessionStorage for refresh persistence
     sessionStorage.setItem(
       "auth",
       JSON.stringify({
@@ -99,110 +91,151 @@ function Login({ setAuth }) {
       })
     );
 
-    // Route based on role
-    if (userData.role === "admin") {
-      navigate("/admin");
-    } else if (userData.role === "agent") {
-      navigate("/chat");
-    } else {
-      setError("Unknown role. Please contact support.");
-    }
+    if (userData.role === "admin") navigate("/admin");
+    else if (userData.role === "agent") navigate("/chat");
+    else setError("Unknown role. Please contact support.");
+
+    setLoading(false);
   };
 
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "linear-gradient(135deg, #E6F0FA 0%, #FFFFFF 100%)",
-      }}
-    >
+    <Box className="auth-wrapper">
       <Paper
-        elevation={5}
-        sx={{
-          p: 4,
-          width: 400,
-          textAlign: "center",
-          borderRadius: 4,
-        }}
+        component={motion.div}
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="auth-card"
+        sx={{ maxWidth: 450 }}
       >
-        {/* Mount Sinai Logo */}
-        <img
+        {/* Logo */}
+        <Box
+          component="img"
           src={MSLogo}
           alt="Mount Sinai Logo"
-          style={{ width: "130px", marginBottom: "20px" }}
+          sx={{
+            width: 140,
+            mb: 2,
+            display: "block",
+            mx: "auto",
+          }}
         />
 
         <Typography
-          variant="h6"
-          sx={{ fontWeight: "bold", color: "#002F6C", mb: 2 }}
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            textAlign: "center",
+            color: "#002F6C",
+          }}
         >
-          Mount Sinai Radiology Login
+          Welcome Back
         </Typography>
 
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        <Typography
+          sx={{
+            textAlign: "center",
+            mb: 3,
+            color: "#555",
+            fontSize: "0.95rem",
+          }}
+        >
+          Log in to access your radiology tools.
+        </Typography>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField
-            {...register("email")}
-            label="Email"
-            type="email"
-            fullWidth
-            margin="normal"
-            required
-          />
-          <TextField
-            {...register("password")}
-            label="Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            required
-          />
+          <Box display="flex" flexDirection="column" gap={3}>
+            <TextField
+              {...register("email")}
+              label="Email"
+              type="email"
+              fullWidth
+              required
+              className="auth-input"
+            />
 
-          <Button
-            type="submit"
-            fullWidth
-            sx={{
-              mt: 3,
-              py: 1,
-              fontWeight: "bold",
-              color: "white",
-              background: "linear-gradient(90deg, #002F6C, #642F6C)",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                background: "linear-gradient(90deg, #E41C77, #00ADEF)",
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            LOGIN
-          </Button>
+            {/* Password with show/hide */}
+            <TextField
+              {...register("password")}
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              required
+              className="auth-input"
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <Button
+              type="submit"
+              disabled={loading}
+              className="ms-btn-main"
+              sx={{ py: 1.4, fontSize: "1rem" }}
+            >
+              {loading ? "Logging in..." : "LOGIN"}
+            </Button>
+
+            {/* RESET PASSWORD */}
+            <Typography
+              sx={{
+                textAlign: "center",
+                mt: 1,
+                fontSize: "0.9rem",
+              }}
+            >
+              Forgot Password?{" "}
+              <span
+                style={{
+                  color: "#E41C77",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/reset-password")}
+              >
+                Reset Password
+              </span>
+            </Typography>
+
+            {/* SIGN UP */}
+            <Typography
+              sx={{
+                mt: -1.5,
+                textAlign: "center",
+                fontSize: "0.9rem",
+              }}
+            >
+              Don’t have an account?{" "}
+              <span
+                style={{
+                  color: "#E41C77",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/signup")}
+              >
+                Sign up
+              </span>
+            </Typography>
+          </Box>
         </form>
-
-        <Typography variant="body2" sx={{ mt: 2 }}>
-          Don’t have an account?{" "}
-          <Link
-            href="/signup"
-            underline="hover"
-            sx={{ color: "#E41C77", fontWeight: 500 }}
-          >
-            Sign up here
-          </Link>
-        </Typography>
-
-        <Typography variant="body2" sx={{ mt: 1 }}>
-          Forgot Password?{" "}
-          <Link
-            href="/resetpassword"
-            underline="hover"
-            sx={{ color: "#E41C77", fontWeight: 500 }}
-          >
-            Reset Password
-          </Link>
-        </Typography>
       </Paper>
     </Box>
   );

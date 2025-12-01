@@ -10,13 +10,18 @@ import {
   Paper,
   Alert,
   MenuItem,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
+import { motion } from "framer-motion";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import MSLogo from "../assets/MSLogo.png";
 
 function Signup() {
   const { register, handleSubmit } = useForm();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const test_password = (value) => {
@@ -29,7 +34,7 @@ function Signup() {
       newErrors.push("At least one special character (!@#$%^&*)");
     return newErrors;
   };
-  
+
   const onSubmit = async ({ firstName, lastName, email, password, role }) => {
     setError("");
     setSuccess("");
@@ -60,8 +65,7 @@ function Signup() {
             login_time: new Date(),
           },
         ]);
-        
-        //compares with the postgre code 23505 if the account already exists
+
         if (dbError?.code === "23505") {
           setError("Account already exists. Login or reset password.");
           return;
@@ -69,65 +73,157 @@ function Signup() {
         if (dbError) throw dbError;
       }
 
-      setSuccess("Signup successful! Please check your email to verify your account.");
+      setSuccess(
+        "Signup successful! Please check your email to verify your account."
+      );
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       console.error("Signup error:", err);
       setError(err.message || "Something went wrong during signup.");
     }
   };
-  
+
   return (
-    <Box
-      sx={{
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "linear-gradient(135deg, #E6F0FA 0%, #FFFFFF 100%)",
-      }}
-    >
-      <Paper elevation={5} sx={{ p: 4, width: 400, textAlign: "center", borderRadius: 4 }}>
-        <img
+    <Box className="auth-wrapper">
+      <Paper
+        elevation={6}
+        className="auth-card"
+        component={motion.div}
+        initial={{ opacity: 0, y: 25 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        sx={{ maxWidth: 450 }}
+      >
+        <Box
+          component="img"
           src={MSLogo}
           alt="Mount Sinai Logo"
-          style={{ width: "130px", marginBottom: "20px" }}
+          sx={{
+            width: 140,
+            mb: 2,
+            display: "block",
+            mx: "auto",
+          }}
         />
-        <Typography variant="h6" sx={{ fontWeight: "bold", color: "#002F6C", mb: 2 }}>
-          Mount Sinai Radiology Signup
+
+        <Typography
+          variant="h5"
+          sx={{
+            textAlign: "center",
+            fontWeight: 700,
+            color: "#002F6C",
+            mb: 1,
+          }}
+        >
+          Create Your Account
+        </Typography>
+
+        <Typography
+          sx={{
+            textAlign: "center",
+            mb: 3,
+            color: "#555",
+            fontSize: "0.95rem",
+          }}
+        >
+          Sign up to access Mount Sinai Radiology tools.
         </Typography>
 
         {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
         {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <TextField {...register("firstName")} label="First Name" fullWidth margin="normal" required />
-          <TextField {...register("lastName")} label="Last Name" fullWidth margin="normal" required />
-          <TextField {...register("email")} label="Email" type="email" fullWidth margin="normal" required />
-          <TextField {...register("password")} label="Password" type="password" fullWidth margin="normal" required />
-          <TextField {...register("role")} select label="Role" fullWidth margin="normal" required>
-            <MenuItem value="agent">Agent</MenuItem>
-            <MenuItem value="admin">Admin</MenuItem>
-          </TextField>
+          <Box display="flex" flexDirection="column" gap={2.5}>
+            <TextField
+              {...register("firstName")}
+              label="First Name"
+              fullWidth
+              required
+              className="auth-input"
+            />
 
-          <Button
-            type="submit"
-            fullWidth
-            sx={{
-              mt: 3,
-              py: 1,
-              fontWeight: "bold",
-              color: "white",
-              background: "linear-gradient(90deg, #002F6C, #642F6C)",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                background: "linear-gradient(90deg, #E41C77, #00ADEF)",
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            SIGN UP
-          </Button>
+            <TextField
+              {...register("lastName")}
+              label="Last Name"
+              fullWidth
+              required
+              className="auth-input"
+            />
+
+            <TextField
+              {...register("email")}
+              label="Email"
+              type="email"
+              fullWidth
+              required
+              className="auth-input"
+            />
+
+            {/* Password with show/hide */}
+            <TextField
+              {...register("password")}
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              fullWidth
+              required
+              className="auth-input"
+              slotProps={{
+                input: {
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={() => setShowPassword((p) => !p)}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
+              }}
+            />
+
+            <TextField
+              {...register("role")}
+              select
+              label="Select Role"
+              fullWidth
+              required
+              className="auth-input"
+            >
+              <MenuItem value="agent">Agent</MenuItem>
+              <MenuItem value="admin">Admin</MenuItem>
+            </TextField>
+
+            <Button
+              type="submit"
+              fullWidth
+              className="ms-btn-main"
+              sx={{ py: 1.4, fontSize: "1rem" }}
+            >
+              SIGN UP
+            </Button>
+
+            <Typography
+              sx={{
+                textAlign: "center",
+                mt: 1,
+                fontSize: "0.9rem",
+              }}
+            >
+              Already have an account?{" "}
+              <span
+                style={{
+                  color: "#E41C77",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                }}
+                onClick={() => navigate("/login")}
+              >
+                Log in
+              </span>
+            </Typography>
+          </Box>
         </form>
       </Paper>
     </Box>
