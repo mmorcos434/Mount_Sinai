@@ -1,3 +1,42 @@
+**Sinai Nexus --- Radiology Scheduling & Knowledge Assistant**
+============================================================
+
+**Sinai Nexus** is an integrated platform designed to streamline Radiology scheduling, protocol management, and knowledge lookup for the Mount Sinai Health System.\
+It combines a **deterministic scheduling query engine**, a **RAG-powered document assistant**, and a **modern React/MUI admin interface** into one unified toolkit for technologists, schedulers, and support staff.
+
+At its core, Sinai Nexus cleans and normalizes the large Epic scheduling export, turning it into a structured dataset for fast, accurate lookup of exams, locations, rooms, and visit durations.\
+On top of this data layer, the platform provides two fully connected interfaces:
+
+### **1\. Radiology Scheduling Assistant (LLM-guided, deterministic results)**
+
+Agents can ask natural-language questions such as:
+
+-   "Where is MRI Brain performed?"
+
+-   "Which rooms at 1176 5th Ave do CT Abdomen?"
+
+-   "How long is a CT Chest scan?"
+
+The system uses Gemini to detect intent and extract exam/site text, but all answers come from **exact Pandas filters and RapidFuzz matching** --- ensuring results are trustworthy, audit-friendly, and aligned with official scheduling tables.
+
+### **2\. Radiology Document Q&A Assistant (RAG)**
+
+The platform ingests protocol PDFs, DOCX files, Markdown, and notes into a FAISS index.\
+Agents can ask:
+
+-   "What are the contraindications for MRI abdomen?"
+
+-   "What's the prep for renal ultrasound?"
+
+-   "Find the document that explains contrast rules."
+
+This enables fast retrieval of unstructured radiology guidance without manually searching multiple folders or binders.
+
+### **3\. Radiology Admin Dashboard (File Uploads + Knowledge Management)**
+
+Admins can upload new documents, add internal notes, manage protocol categories, and reset the FAISS index --- all through a clean, glass-styled UI.\
+A built-in toggle lets admins instantly switch between managing content and testing the assistant.
+
 **Frontend: Radiology Admin & Agent Portal (React + MUI)**
 ==========================================================
 
@@ -224,7 +263,13 @@ A small Python toolkit that cleans Mt. Sinai's Epic scheduling export and powers
 **Query Engine**
 ----------------
 
-ComponentResponsibilityquery_interpreter.pyGemini → intent extractionfuzzy_matchers.pyRapidFuzz name resolutionquery_handlers.pyDeterministic Pandas logicquery_router.pyIntent routing + natural language answersupdate_helpers.pyTemporary overrides for outages
+| Component | Responsibility |
+| --- | --- |
+| `query_interpreter.py` | Gemini → intent extraction |
+| `fuzzy_matchers.py` | RapidFuzz name resolution |
+| `query_handlers.py` | Deterministic Pandas logic |
+| `query_router.py` | Intent routing + natural language answers |
+| `update_helpers.py` | Temporary overrides for outages |
 
 **Backend Setup**
 -----------------
