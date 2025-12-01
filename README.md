@@ -3,10 +3,9 @@
 
 The frontend provides two integrated interfaces:
 
-1.  **Radiology Admin Dashboard**Used by supervisors or knowledge-base managers to upload documents, protocols, and internal notes, and to trigger backend FAISS re-indexing.
-    
-2.  **Radiology Agent Chat Portal**Used by scheduling agents to chat with the Mount Sinai Radiology Assistant (Scheduling Engine + RAG Engine).Supports multi-chat threads, automatic summarization, structured responses, and instant switching between Scheduling Q&A and Document Q&A.
-    
+1.  **Radiology Admin Dashboard** Used by supervisors or knowledge-base managers to upload documents, protocols, and internal notes, and to trigger backend FAISS re-indexing.
+
+2.  **Radiology Agent Chat Portal** Used by scheduling agents to chat with the Mount Sinai Radiology Assistant (Scheduling Engine + RAG Engine). Supports multi-chat threads, automatic summarization, structured responses, and instant switching between Scheduling Q&A and Document Q&A.
 
 Both UIs are built with **React + Vite**, styled using **Material UI (MUI)**, and communicate directly with the FastAPI backend.
 
@@ -15,64 +14,93 @@ Both UIs are built with **React + Vite**, styled using **Material UI (MUI)**, an
 
 ### ✅ **Admin Dashboard**
 
-*   Upload protocol files (PDF, DOCX, CSV, XLSX, Markdown)
-    
-*   Save custom policy notes (stored as JSON)
-    
-*   Submit files directly to backend ingestion
-    
-*   Trigger FAISS index resets
-    
-*   View/delete uploaded files
-    
-*   Aesthetic “Apple-style” gradient toggle between Admin ↔ Chat modes
-    
+-   Upload protocol files (PDF, DOCX, CSV, XLSX, Markdown)
+
+-   Save custom policy notes (stored as JSON)
+
+-   Submit files directly to backend ingestion
+
+-   Trigger FAISS index resets
+
+-   View/delete uploaded files
+
+-   Aesthetic "Apple-style" gradient toggle between Admin ↔ Chat modes
 
 ### ✅ **Radiology Agent Chat Assistant**
 
-*   Separate chat types:
-    
-    *   **Scheduling Chat** → calls /agent-chat
-        
-    *   **Document Q&A Chat** → calls /rag-chat
-        
-*   Automatic detection and bullet-point rendering of exam lists, rooms, and sites
-    
-*   Multi-thread, persistent chat history (stored in localStorage)
-    
-*   Automatic chat title generation based on first user question
-    
-*   Smooth auto-scroll (including delay when switching from Admin → Chat to avoid race conditions)
-    
-*   Navbar hidden automatically when embedded inside Admin view
-    
+-   Separate chat types:
+
+    -   **Scheduling Chat** → calls /agent-chat
+
+    -   **Document Q&A Chat** → calls /rag-chat
+
+-   Automatic detection and bullet-point rendering of exam lists, rooms, and sites
+
+-   Multi-thread, persistent chat history (stored in localStorage)
+
+-   Automatic chat title generation based on first user question
+
+-   Smooth auto-scroll (including delay when switching from Admin → Chat to avoid race conditions)
+
+-   Navbar hidden automatically when embedded inside Admin view
 
 **Frontend Directory Structure**
 --------------------------------
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   frontend/  ├── src/  │   ├── components/  │   │   ├── AdminDashboard.jsx      # Upload UI, policy notes, file table, index reset  │   │   ├── AgentChat.jsx           # Multi-thread AI chat interface  │   │   └── Shared/                 # Reusable UI pieces  │   ├── context/  │   │   └── useAuth.jsx             # Authentication provider (Supabase or custom)  │   ├── api/  │   │   └── supabaseClient.js       # Supabase client setup  │   ├── assets/                     # Logos and images  │   ├── App.jsx  │   └── main.jsx  └── public/   `
+`
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── AdminDashboard.jsx      # Upload UI, policy notes, file table, index reset
+│   │   ├── AgentChat.jsx           # Multi-thread AI chat interface
+│   │   └── Shared/                 # Reusable UI pieces
+│   ├── context/
+│   │   └── useAuth.jsx             # Authentication provider (Supabase or custom)
+│   ├── api/
+│   │   └── supabaseClient.js       # Supabase client setup
+│   ├── assets/                     # Logos and images
+│   ├── App.jsx
+│   └── main.jsx
+└── public/
+`
 
 **Tech Stack**
 --------------
 
-AreaLibrary / ToolFrameworkReact (Vite)StylingMaterial-UI (MUI)AuthenticationSupabase AuthState ManagementReact hooks + localStorage persistenceBackend Communicationfetch() → FastAPI endpointsUI StyleGlassmorphism, layered blur cards, Apple-style gradientsRoutingReact Router
+| Area | Library / Tool |
+| --- | --- |
+| Framework | React (Vite) |
+| Styling | Material-UI (MUI) |
+| Authentication | Supabase Auth |
+| State Management | React hooks + localStorage persistence |
+| Backend Communication | `fetch()` → FastAPI endpoints |
+| UI Style | Glassmorphism, layered blur cards, Apple-style gradients |
+| Routing | React Router |
 
 **Running the Frontend**
 ------------------------
 
 ### **1\. Install dependencies**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   cd frontend  npm install   `
+`
+cd frontend
+npm install
+`
 
 ### **2\. Supabase Environment Variables (if needed)**
 
 Create .env:
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   VITE_SUPABASE_URL=your-url  VITE_SUPABASE_KEY=your-key   `
+`
+VITE_SUPABASE_URL=your-url
+VITE_SUPABASE_KEY=your-key
+`
 
 ### **3\. Start development server**
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   npm run dev   `
+`
+npm run dev
+`
 
 The app runs at:
 
@@ -85,40 +113,45 @@ Make sure the backend FastAPI server is running at [**http://localhost:8000**](h
 
 ### **Admin ↔ Chat Toggle**
 
-AdminDashboard.jsx fully replaces the page content with when toggled, preventing duplicate navbars.
+AdminDashboard.jsx fully replaces the page content with <AgentChat hideNavbar={true} /> when toggled, preventing duplicate navbars.
 
 ### **Chat Thread Persistence**
 
 Stored in:
 
-Plain textANTLR4BashCC#CSSCoffeeScriptCMakeDartDjangoDockerEJSErlangGitGoGraphQLGroovyHTMLJavaJavaScriptJSONJSXKotlinLaTeXLessLuaMakefileMarkdownMATLABMarkupObjective-CPerlPHPPowerShell.propertiesProtocol BuffersPythonRRubySass (Sass)Sass (Scss)SchemeSQLShellSwiftSVGTSXTypeScriptWebAssemblyYAMLXML`   localStorage["msAgentChats_v1"]   `
+`
+localStorage["msAgentChats_v1"]
+`
 
 Each chat object includes:
 
-*   id
-    
-*   mode (schedule or rag)
-    
-*   title
-    
-*   messages\[\]
-    
-*   timestamps
-    
+-   id
+
+-   mode (schedule or rag)
+
+-   title
+
+-   messages[]
+
+-   timestamps
 
 ### **Auto-scroll Behavior**
 
 Two layers:
 
-*   Real-time autoscroll on new messages
-    
-*   Delayed scroll after mount when switching from Admin → Chat
-    
+-   Real-time autoscroll on new messages
+
+-   Delayed scroll after mount when switching from Admin → Chat
 
 **Endpoints Called by the Frontend**
 ------------------------------------
 
-EndpointMethodUsed InPurpose/agent-chatPOSTAgentChatStructured scheduling engine/rag-chatPOSTAgentChatRAG/FAISS document Q&A/uploadPOSTAdminDashboardUpload files for indexing/init\_indexPOSTAdminDashboardReset entire FAISS store
+| Endpoint | Method | Used In | Purpose |
+| --- | --- | --- | --- |
+| `/agent-chat` | POST | AgentChat | Structured scheduling engine |
+| `/rag-chat` | POST | AgentChat | RAG/FAISS document Q&A |
+| `/upload` | POST | AdminDashboard | Upload files for indexing |
+| `/init_index` | POST | AdminDashboard | Reset entire FAISS store |
 
 **Adding New Frontend Features**
 --------------------------------
@@ -126,12 +159,146 @@ EndpointMethodUsed InPurpose/agent-chatPOSTAgentChatStructured scheduling engine
 ### New chat mode
 
 1.  Add a new mode string
-    
+
 2.  Add a button in sidebar
-    
+
 3.  Add new endpoint logic in sendToBackend()
-    
 
 ### PDF preview
 
-Add a modal + viewer or integrate PDF.js.</p><h3 class="slate-h3">Route protection</h3><p class="slate-paragraph">Wrap UI inside:</p><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">if (!auth?.isLoggedIn) return <Navigate to="/login" />;</div><div class="slate-code\_line"></div></code></pre><h2 class="slate-h2"><strong class="slate-bold">Frontend Troubleshooting</strong></h2><ul class="slate-ul"><li class="slate-li"><div style="position:relative"><strong class="slate-bold">Double navbar showing</strong>→ Pass hideNavbar={true} when embedding Chat inside Admin</div></li><li class="slate-li"><div style="position:relative"><strong class="slate-bold">Autoscroll not working on load</strong>→ Ensure setTimeout(() => scrollIntoView(), 150) exists</div></li><li class="slate-li"><div style="position:relative"><strong class="slate-bold">Messages appear but no response</strong>→ Backend URLs must match current deployment (localhost vs Vercel/Railway)</div></li><li class="slate-li"><div style="position:relative"><strong class="slate-bold">Uploads show but don’t index</strong>→ Backend /upload must accept file type being used</div></li></ul><h1 class="slate-h1"><strong class="slate-bold">Backend: Mt. Sinai Scheduling Cleanup & Query Toolkit</strong></h1><p class="slate-paragraph">A small Python toolkit that cleans Mt. Sinai’s Epic scheduling export and powers a question-answering assistant for technologists, schedulers, and support teams. The project turns the raw Excel/CSV feed into a normalized Parquet table and answers natural-language questions such as “Where is CT Head performed?” or “How long is a CT ABDOMEN visit?” using fuzzy matching and deterministic Pandas lookups, no RAG or embeddings required.</p><h2 class="slate-h2"><strong class="slate-bold">Repository Layout</strong></h2><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">├── exams\_cleanup.py # Convert scheduling.csv → scheduling\_clean.parquet</div><div class="slate-code\_line">├── data/</div><div class="slate-code\_line">│ ├── scheduling.csv</div><div class="slate-code\_line">│ ├── mapping.json</div><div class="slate-code\_line">│ ├── scheduling\_clean.parquet</div><div class="slate-code\_line">│ └── updates.json</div><div class="slate-code\_line">├── src/</div><div class="slate-code\_line">│ ├── data\_loader.py</div><div class="slate-code\_line">│ ├── fuzzy\_matchers.py</div><div class="slate-code\_line">│ ├── query\_handlers.py</div><div class="slate-code\_line">│ ├── query\_interpreter.py</div><div class="slate-code\_line">│ ├── query\_router.py</div><div class="slate-code\_line">│ └── update\_helpers.py</div><div class="slate-code\_line">└── archive/</div><div class="slate-code\_line"></div></code></pre><h2 class="slate-h2"><strong class="slate-bold">Data Pipeline</strong></h2><ol class="slate-ol"><li class="slate-li"><div style="position:relative">Drop latest Epic export into data/scheduling.csv</div></li><li class="slate-li"><div style="position:relative">Run cleanup script→ Produces scheduling\_clean.parquet</div></li><li class="slate-li"><div style="position:relative">All modules query from a single shared in-memory dataset</div></li></ol><h2 class="slate-h2"><strong class="slate-bold">Query Engine</strong></h2><p class="slate-paragraph">ComponentResponsibilityquery\_interpreter.pyGemini → intent extractionfuzzy\_matchers.pyRapidFuzz name resolutionquery\_handlers.pyDeterministic Pandas logicquery\_router.pyIntent routing + natural language answersupdate\_helpers.pyTemporary overrides for outages</p><h2 class="slate-h2"><strong class="slate-bold">Backend Setup</strong></h2><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">python3 -m venv venv</div><div class="slate-code\_line">source venv/bin/activate</div><div class="slate-code\_line">pip install -r requirements.txt</div><div class="slate-code\_line"></div></code></pre><p class="slate-paragraph">Environment variable:</p><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">GOOGLE\_API\_KEY=your-key-here</div><div class="slate-code\_line"></div></code></pre><h2 class="slate-h2"><strong class="slate-bold">Usage</strong></h2><h3 class="slate-h3">Build the parquet dataset</h3><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">python3 exams\_cleanup.py</div><div class="slate-code\_line"></div></code></pre><h3 class="slate-h3">Ask questions</h3><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">from src.query\_router import answer\_scheduling\_query</div><div class="slate-code\_line">print(answer\_scheduling\_query("Where is CT CHEST performed?"))</div><div class="slate-code\_line"></div></code></pre><h3 class="slate-h3">Manage outages</h3><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">disable\_exam("CT HEAD WO IV", "1176 5TH AVE", reason="Maintenance")</div><div class="slate-code\_line"></div></code></pre><h2 class="slate-h2"><strong class="slate-bold">How to run files</strong></h2><ul class="slate-ul"><li class="slate-li"><div style="position:relative">Navigate to repo root</div></li><li class="slate-li"><div style="position:relative">Use python -m folder.filename</div></li></ul><p class="slate-paragraph">Example:</p><pre class="slate-code\_block"><select style="float:right" contenteditable="false"><option value="">Plain text</option><option value="antlr4">ANTLR4</option><option value="bash">Bash</option><option value="c">C</option><option value="csharp">C#</option><option value="css">CSS</option><option value="coffeescript">CoffeeScript</option><option value="cmake">CMake</option><option value="dart">Dart</option><option value="django">Django</option><option value="docker">Docker</option><option value="ejs">EJS</option><option value="erlang">Erlang</option><option value="git">Git</option><option value="go">Go</option><option value="graphql">GraphQL</option><option value="groovy">Groovy</option><option value="html">HTML</option><option value="java">Java</option><option value="javascript">JavaScript</option><option value="json">JSON</option><option value="jsx">JSX</option><option value="kotlin">Kotlin</option><option value="latex">LaTeX</option><option value="less">Less</option><option value="lua">Lua</option><option value="makefile">Makefile</option><option value="markdown">Markdown</option><option value="matlab">MATLAB</option><option value="markup">Markup</option><option value="objectivec">Objective-C</option><option value="perl">Perl</option><option value="php">PHP</option><option value="powershell">PowerShell</option><option value="properties">.properties</option><option value="protobuf">Protocol Buffers</option><option value="python">Python</option><option value="r">R</option><option value="ruby">Ruby</option><option value="sass">Sass (Sass)</option><option value="scss">Sass (Scss)</option><option value="scheme">Scheme</option><option value="sql">SQL</option><option value="shell">Shell</option><option value="swift">Swift</option><option value="svg">SVG</option><option value="tsx">TSX</option><option value="typescript">TypeScript</option><option value="wasm">WebAssembly</option><option value="yaml">YAML</option><option value="xml">XML</option></select><code ><div class="slate-code\_line">python -m testing.test\_general</div><div class="slate-code\_line"></div></code></pre><h2 class="slate-h2"><strong class="slate-bold">Extending the Toolkit</strong></h2><ul class="slate-ul"><li class="slate-li"><div style="position:relative">Add intents</div></li><li class="slate-li"><div style="position:relative">Expand site list</div></li><li class="slate-li"><div style="position:relative">Update mappings</div></li><li class="slate-li"><div style="position:relative">Add logging layers</div></li></ul><h2 class="slate-h2"><strong class="slate-bold">Backend Troubleshooting</strong></h2><ul class="slate-ul"><li class="slate-li"><div style="position:relative">Parquet missing → run cleanup script</div></li><li class="slate-li"><div style="position:relative">Gemini errors → check .env</div></li><li class="slate-li"><div style="position:relative">Bad matches → tune RapidFuzz thresholds</div></li><li class="slate-li"><div style="position:relative">Overrides ignored → update updates.json</div></li></ul><h2 class="slate-h2"><strong class="slate-bold">Why Not RAG?</strong></h2><p class="slate-paragraph">Structured scheduling data is best queried with deterministic lookups, not embeddings.LLM is only used for <strong class="slate-bold">intent detection</strong>, not dataset search.</p></x-turndown>
+Add a modal + <iframe /> viewer or integrate PDF.js.
+
+### Route protection
+
+Wrap UI inside:
+
+`
+if (!auth?.isLoggedIn) return <Navigate to="/login" />;
+`
+
+**Frontend Troubleshooting**
+----------------------------
+
+-   **Double navbar showing** → Pass hideNavbar={true} when embedding Chat inside Admin
+
+-   **Autoscroll not working on load** → Ensure setTimeout(() => scrollIntoView(), 150) exists
+
+-   **Messages appear but no response** → Backend URLs must match current deployment (localhost vs Vercel/Railway)
+
+-   **Uploads show but don't index** → Backend /upload must accept file type being used
+
+**Backend: Mt. Sinai Scheduling Cleanup & Query Toolkit**
+=========================================================
+
+A small Python toolkit that cleans Mt. Sinai's Epic scheduling export and powers a question-answering assistant for technologists, schedulers, and support teams. The project turns the raw Excel/CSV feed into a normalized Parquet table and answers natural-language questions such as "Where is CT Head performed?" or "How long is a CT ABDOMEN visit?" using fuzzy matching and deterministic Pandas lookups, no RAG or embeddings required.
+
+**Repository Layout**
+---------------------
+
+`
+├── exams_cleanup.py          # Convert scheduling.csv → scheduling_clean.parquet
+├── data/
+│   ├── scheduling.csv
+│   ├── mapping.json
+│   ├── scheduling_clean.parquet
+│   └── updates.json
+├── src/
+│   ├── data_loader.py
+│   ├── fuzzy_matchers.py
+│   ├── query_handlers.py
+│   ├── query_interpreter.py
+│   ├── query_router.py
+│   └── update_helpers.py
+└── archive/
+`
+
+**Data Pipeline**
+-----------------
+
+1.  Drop latest Epic export into data/scheduling.csv
+
+2.  Run cleanup script → Produces scheduling_clean.parquet
+
+3.  All modules query from a single shared in-memory dataset
+
+**Query Engine**
+----------------
+
+ComponentResponsibilityquery_interpreter.pyGemini → intent extractionfuzzy_matchers.pyRapidFuzz name resolutionquery_handlers.pyDeterministic Pandas logicquery_router.pyIntent routing + natural language answersupdate_helpers.pyTemporary overrides for outages
+
+**Backend Setup**
+-----------------
+
+`
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+`
+
+Environment variable:
+
+`
+GOOGLE_API_KEY=your-key-here
+`
+
+**Usage**
+---------
+
+### Build the parquet dataset
+
+`
+python3 exams_cleanup.py
+`
+
+### Ask questions
+
+`
+from src.query_router import answer_scheduling_query
+print(answer_scheduling_query("Where is CT CHEST performed?"))
+`
+
+### Manage outages
+
+`
+disable_exam("CT HEAD WO IV", "1176 5TH AVE", reason="Maintenance")
+`
+
+**How to run files**
+--------------------
+
+-   Navigate to repo root
+
+-   Use python -m folder.filename
+
+Example:
+
+`
+python -m testing.test_general
+`
+
+**Extending the Toolkit**
+-------------------------
+
+-   Add intents
+
+-   Expand site list
+
+-   Update mappings
+
+-   Add logging layers
+
+**Backend Troubleshooting**
+---------------------------
+
+-   Parquet missing → run cleanup script
+
+-   Gemini errors → check .env
+
+-   Bad matches → tune RapidFuzz thresholds
+
+-   Overrides ignored → update updates.json
+
+**Why Not RAG?**
+----------------
+
+Structured scheduling data is best queried with deterministic lookups, not embeddings. LLM is only used for **intent detection**, not dataset search.
