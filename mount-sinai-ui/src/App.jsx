@@ -50,7 +50,7 @@ function App() {
         {/* Auth Pages */}
         <Route path="/login" element={<Login setAuth={setAuth} />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/update-password" element={<UpdatePassword />} />
 
         {/* Agent Dashboard */}

@@ -1,0 +1,278 @@
+/* GLOBAL SMOOTHING + FONT ------------------------------------- */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: "Inter", sans-serif !important;
+    background: linear-gradient(135deg, #eef3ff 0%, #ffffff 60%);
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  /* Blue glow top-right */
+  body::before {
+    content: "";
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #00adef33, transparent 70%);
+    filter: blur(20px);
+    z-index: -1;
+  }
+  
+  /* Pink glow bottom-left */
+  body::after {
+    content: "";
+    position: fixed;
+    bottom: -200px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, #e41c7733, transparent 70%);
+    filter: blur(20px);
+    z-index: -1;
+  }
+  
+  
+  /* Mount Sinai colors ------------------------------------------ */
+  
+  :root {
+    --ms-blue: #002f6c;
+    --ms-cyan: #00adef;
+    --ms-pink: #e41c77;
+    --ms-purple: #642f6c;
+  }
+  
+  /* AUTH PAGE CENTER CONTAINERS --------------------------------- */
+  
+  .auth-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 24px;
+    background: transparent !important;
+  }
+  
+  
+  /* GLASS CARD STYLE -------------------------------------------- */
+  
+  .auth-card {
+    width: 420px;
+    padding: 40px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    animation: fadeIn 0.7s ease;
+  }
+  
+  /* LOGO -------------------------------------------------------- */
+  
+  .auth-logo {
+    width: 150px;
+    margin: 0 auto 16px;
+    display: block;
+  }
+  
+  /* INPUT FIELDS ------------------------------------------------ */
+  
+  .auth-input .MuiInputBase-root {
+    border-radius: 14px !important;
+    background: #ffffffbb;
+    backdrop-filter: blur(5px);
+  }
+  
+  /* BUTTON STYLING --------------------------------------------- */
+  
+  .ms-btn-main {
+    background: linear-gradient(90deg, var(--ms-blue), var(--ms-purple)) !important;
+    color: white !important;
+    font-weight: 700 !important;
+    padding: 12px !important;
+    border-radius: 12px !important;
+    transition: 0.25s ease !important;
+  }
+  
+  .ms-btn-main:hover {
+    background: linear-gradient(90deg, var(--ms-pink), var(--ms-cyan)) !important;
+    transform: translateY(-2px) scale(1.03);
+  }
+  
+  .ms-btn-link {
+    font-weight: 600 !important;
+    color: var(--ms-pink) !important;
+  }
+  
+  /* Animation --------------------------------------------------- */
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Make inputs glow slightly on focus */
+.auth-input .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: var(--ms-blue) !important;
+    box-shadow: 0 0 0 3px rgba(0, 45, 105, 0.15);
+  }
+  
+  /* Smooth transition */
+  .auth-input .MuiOutlinedInput-root {
+    transition: all 0.2s ease !important;
+  }
+  
+  /* Dropdown menu */
+  .MuiMenu-paper {
+    border-radius: 14px !important;
+    backdrop-filter: blur(12px);
+  }
+
+  /* ============================================================
+   MOUNT SINAI — AGENT CHAT UI ENHANCEMENTS
+   Modern + clean + glass + gradient accents
+   ============================================================ */
+
+/* --- Glass Sidebar Card ------------------------------------ */
+.sidebar-glass-card {
+    background: rgba(255, 255, 255, 0.55);
+    border-radius: 18px;
+    padding: 18px;
+    backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* --- Sidebar List Items ------------------------------------ */
+  .sidebar-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .sidebar-list-item:hover {
+    background: rgba(0, 47, 108, 0.08);
+  }
+  
+  .sidebar-list-item.active {
+    background: rgba(0, 47, 108, 0.14);
+    border-left: 4px solid var(--ms-blue);
+    padding-left: 8px;
+  }
+  
+  /* Delete icon subtle hover */
+  .sidebar-list-item .delete-btn {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+  }
+  .sidebar-list-item:hover .delete-btn {
+    opacity: 1;
+  }
+  
+  /* --- Chat Panel Glass -------------------------------------- */
+  .chat-glass-panel {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(18px);
+    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 24px;
+    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.10);
+  }
+  
+  /* --- Chat Bubbles ------------------------------------------ */
+  .chat-bubble-agent {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--ms-blue), var(--ms-purple));
+    color: white;
+    padding: 12px 16px;
+    border-radius: 14px;
+    max-width: 65%;
+    font-size: 0.95rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    animation: fadeIn 0.25s ease;
+  }
+  
+  .chat-bubble-bot {
+    display: inline-block;
+    background: #f7f7ff;
+    color: #002f6c;
+    padding: 12px 16px;
+    border-radius: 14px;
+    max-width: 65%;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    animation: fadeIn 0.25s ease;
+  }
+  
+  /* RAG mode: yellowish tint */
+  .chat-bubble-bot.rag-mode {
+    background: #fff8e6;
+  }
+  
+  /* --- Input Bar --------------------------------------------- */
+  .chat-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+  }
+  
+  .chat-input-field {
+    flex: 1;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(0, 47, 108, 0.25);
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 0.97rem;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  
+  .chat-input-field:focus {
+    border-color: var(--ms-blue);
+    box-shadow: 0 0 0 3px rgba(0,47,108,0.15);
+  }
+  
+  /* --- Send Button ------------------------------------------- */
+  .ms-send-btn {
+    padding: 12px 26px;
+    border-radius: 14px;
+    background: linear-gradient(90deg, var(--ms-pink), var(--ms-cyan));
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .ms-send-btn:hover {
+    transform: scale(1.05);
+  }
+  
+  /* --- Decorative fade divider -------------------------------- */
+  .chat-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ccc, transparent);
+    margin: 12px 0;
+  }
+
+  .assistant-message {
+    white-space: pre-wrap;
+  }
+  
+  
+  
+
+  
