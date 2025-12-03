@@ -7,8 +7,8 @@ pyarrow
 rapidfuzz
 google-generativeai
 python-multipart
-faiss-cpu==1.7.4
 sentence-transformers
 scikit-learn
 unstructured[pdf]
 unstructured[docx]
+supabase
