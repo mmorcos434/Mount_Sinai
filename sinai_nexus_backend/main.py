@@ -211,3 +211,7 @@ Question:
 @app.get("/")
 def home():
     return {"message": "Supabase RAG Backend is running!"}
+
+@app.get("/healthz")
+def health_check():
+    return {"status": "ok"}
