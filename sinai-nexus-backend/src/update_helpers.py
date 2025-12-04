@@ -18,7 +18,7 @@ def disable_exam(exam, site, reason="unspecified"):
         "reason": reason,
         "timestamp": pd.Timestamp.now().isoformat()
     })
-    with open("data/updates.json", "w") as f:
+    with open("data/updates.json", "w") as f:   #FIX ME connect Scheduling_Notes/ jsons here
         json.dump(USER_UPDATES, f, indent=2)
     print(f"✅ Marked {exam} at {site} as unavailable ({reason}).")
 

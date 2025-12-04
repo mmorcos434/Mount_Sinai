@@ -36,25 +36,29 @@ def answer_scheduling_query(user_input: str):
     # Intent 1: "Is [exam] done at [site]?"
     if intent == "exam_at_site" and exam and site:
         found = exam_at_site(exam, site)
-        return f"✅ Yes, {exam} is performed at {site}." if found \
-               else f"❌ No, {exam} is not listed at {site}."
+        return (
+            f"✅ Yes, {exam} is performed at {site}."
+            if found else f"❌ No, {exam} is not listed at {site}."
+        )
 
     # Intent 2: "Which locations perform [exam]?"
     elif intent == "locations_for_exam" and exam:
         locs = locations_for_exam(exam)
-        return (
-            f"{exam} is performed at:\n" + "\n".join(locs)
-            if locs else f"Sorry, I couldn’t find any locations for {exam}."
-        )
+        if locs:
+            formatted = "\n".join([f"• {loc}" for loc in locs])
+            return f"{exam} is performed at:\n{formatted}"
+        else:
+            return f"Sorry, I couldn’t find any locations for {exam}."
 
     # Intent 3: "What exams are offered at [site]?"
     elif intent == "exams_at_site" and site:
         exams = exams_at_site(site)
-        return (
-            f"Exams offered at {site}\n:" + "\n".join(exams)
-            if exams else f"No exams found for {site}."
-        )
-    
+        if exams:
+            formatted = "\n".join([f"• {e}" for e in exams])
+            return f"Exams offered at {site}:\n{formatted}"
+        else:
+            return f"No exams found for {site}."
+
     # Intent 4: "How long does [exam] take?"
     elif intent == "exam_duration" and exam:
         length = exam_duration(exam)
@@ -62,23 +66,25 @@ def answer_scheduling_query(user_input: str):
             f"The visit length for {exam} is {length} minutes."
             if length else f"Sorry, I couldn’t find a visit duration for {exam}."
         )
-    
+
     # Intent 5: "Which rooms at [site] perform [exam]?"
     elif intent == "rooms_for_exam_at_site" and exam and site:
         rooms = rooms_for_exam_at_site(exam, site)
-        return (
-            f"Rooms at {site} performing {exam}:\n" + "\n".join(rooms)
-            if rooms else f"No matching rooms found for {exam} at {site}."
-        )
-    
+        if rooms:
+            formatted = "\n".join([f"• {r}" for r in rooms])
+            return f"Rooms at {site} performing {exam}:\n{formatted}"
+        else:
+            return f"No matching rooms found for {exam} at {site}."
+
     # Intent 6: "Which rooms perform [exam]?"
     elif intent == "rooms_for_exam" and exam:
         rooms = rooms_for_exam(exam)
-        return (
-            f"Rooms performing {exam}:\n" + "\n".join(rooms)
-            if rooms else f"No matching rooms found for {exam}."
-        )
+        if rooms:
+            formatted = "\n".join([f"• {r}" for r in rooms])
+            return f"Rooms performing {exam}:\n{formatted}"
+        else:
+            return f"No matching rooms found for {exam}."
 
-    # Fallback if Gemini can't classify the question
+    # Fallback
     else:
         return "Sorry, I couldn’t understand that scheduling question."
