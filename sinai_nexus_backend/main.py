@@ -177,21 +177,20 @@ class DeleteRequest(BaseModel):
 
 @app.post("/delete_file")
 async def delete_file(req: DeleteRequest):
-   response = (
-       supabase.table("documents")
-       .delete()
-       .eq("file_path", req.file_path)
-       .execute()
-   )
+    target = req.file_path.strip().lstrip("/")
 
+    response = (
+        supabase.table("documents")
+        .delete()
+        .ilike("file_path", f"%{target}%")
+        .execute()
+    )
 
-   return {
-       "message": f"Deleted {len(response.data)} chunks",
-       "file_path_received": req.file_path,
-       "deleted_rows": response.data,   
-   }
-
-
+    return {
+        "message": f"Deleted {len(response.data)} chunks",
+        "file_path_received": req.file_path,
+        "deleted_rows": response.data
+    }
 
 
 
