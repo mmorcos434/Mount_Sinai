@@ -193,7 +193,7 @@ function AdminDashboard({ auth }) {
  // -----------------------------
  const handleResetIndex = async () => {
    try {
-     const res = await fetch("http://localhost:8000/init_index", {
+     const res = await fetch("https://sinai-nexus-backend.onrender.com/init_index", {
        method: "POST",
      });
      const data = await res.json();
