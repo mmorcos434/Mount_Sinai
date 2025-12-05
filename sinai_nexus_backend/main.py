@@ -211,7 +211,7 @@ Question:
 # ===============================================================
 @app.get("/")
 async def root():
-    return {"status": "ok", "message": "Operation Smokey Bear backend is running!"}
+    return {"status": "ok", "message": "Mount Sinai Backend is running!"}
 
 @app.get("/healthz")
 def health_check():
