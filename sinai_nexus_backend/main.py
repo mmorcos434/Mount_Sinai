@@ -45,7 +45,7 @@ embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 # ------------------------------
 # FastAPI App
 # ------------------------------
-app = FastAPI(title="Sinai Nexus Backend (Supabase RAG)")
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],       #  Vercel frontend allowed
@@ -209,8 +209,8 @@ Question:
 # 5️⃣ HEALTH CHECK
 # ===============================================================
 @app.get("/")
-def home():
-    return {"message": "Supabase RAG Backend is running!"}
+async def root():
+    return {"status": "ok", "message": "Operation Smokey Bear backend is running!"}
 
 @app.get("/healthz")
 def health_check():
