@@ -12,9 +12,29 @@
 
 import pandas as pd
 import json
+from supabase import create_client
+import os
+from io import BytesIO
+from dotenv import load_dotenv
 
-# Load the cleaned scheduling data
-df = pd.read_parquet("data/new_scheduling_clean.parquet")
+load_dotenv()  
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
+
+supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+bucket = "epic-scheduling"
+path = "Locations_Rooms/new_scheduling_clean.parquet"
+
+# Download Parquet bytes
+res = supabase.storage.from_(bucket).download(path)
+
+if not res:
+    raise Exception("Unable to download parquet from Supabase")
+
+# Read Parquet directly into DataFrame: Loads the cleaned scheduling data
+df = pd.read_parquet(BytesIO(res))
 
 # Load prefix-to-department mapping
 with open("data/mapping.json") as f:

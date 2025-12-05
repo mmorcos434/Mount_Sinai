@@ -9,6 +9,6 @@ google-generativeai
 python-multipart
 sentence-transformers
 scikit-learn
-unstructured[pdf]
+pdfplumber>=0.11.8
 unstructured[docx]
 supabase

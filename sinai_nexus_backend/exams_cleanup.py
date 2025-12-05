@@ -32,13 +32,34 @@
 #   4. Keep only the columns your backend needs
 #   5. Save as Parquet (fast to load, reliable format)
 # -------------------------------------------------------------
-
+from supabase import create_client
 import pandas as pd
+from io import StringIO, BytesIO
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  
 
 # -------------------------------------------------------------
 # Step 1 — Load the CSV file
 # -------------------------------------------------------------
-df = pd.read_csv("data/scheduling.csv")   
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_SERVICE_KEY = os.getenv("SUPABASE_SERVICE_KEY")
+
+supabase = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+bucket_name = "epic-scheduling"      # change if your bucket name is different
+file_path = "Locations_Rooms/scheduling.csv"         # path inside the bucket
+
+response = supabase.storage.from_(bucket_name).download(file_path)
+
+
+if not response:
+    raise Exception("Could not download file from Supabase")
+
+csv_string = response.decode("latin-1")   #convert bytes to text
+df = pd.read_csv(StringIO(csv_string))  #read into pandas
+
 
 
 # -------------------------------------------------------------
@@ -108,6 +129,23 @@ df = df[[
 # -------------------------------------------------------------
 # Step 8 — Save as Parquet (fast to load for backend)
 # -------------------------------------------------------------
-df.to_parquet("data/new_scheduling_clean.parquet", index=False)
+buffer = BytesIO()
+df.to_parquet(buffer, index=False)
+buffer.seek(0)
 
-print("✅ Cleaned scheduling file saved as new_scheduling_clean.parquet")
+print("✅ Parquet generated in memory")
+
+
+# -------------------------------------------------------------
+# Step 9 — Upload Parquet directly to Supabase Storage
+# -------------------------------------------------------------
+parquet_path = "Locations_Rooms/new_scheduling_clean.parquet"
+
+upload_response = supabase.storage.from_(bucket_name).upload(
+    parquet_path,
+    buffer.getvalue(),
+    file_options={"content-type": "application/vnd.apache.parquet"}
+)
+
+print("🎉 Uploaded parquet to Supabase:")
+print(upload_response)
