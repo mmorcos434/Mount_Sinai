@@ -138,27 +138,67 @@ function AdminDashboard({ auth }) {
 
 
  //FIX ME: NEED EXAMS_CLEANUP ENDPOINT
- if (fileType === "Locations/Rooms") {
-     // Call exams_cleanup for Locations/Rooms
-     await fetch("https://sinai-nexus-backend.onrender.com/exams_cleanup", {
-       method: "POST",
-       body: JSON.stringify({ file_path: fullPath }),
-       headers: { "Content-Type": "application/json", "Accept": "application/json" },
-     });
-   }
-   else {
-     // Everything else → /upload
-     const formData = new FormData();
-     formData.append("file", file);           // actual File object
-     formData.append("priority", "3");        // default priority (JSON notes can override to 1)
-     formData.append("path", fullPath);       //Path for file
+ // If Locations/Rooms + CSV → run backend transformation
+// ===============================
+// POST-UPLOAD PROCESSING
+// ===============================
 
+// 1) CSV + Locations/Rooms → trigger new backend pipeline
+  if (fileType === "Locations/Rooms" && actualExtension === "csv") {
 
-     await fetch("https://sinai-nexus-backend.onrender.com/upload", {
-       method: "POST",
-       body: formData,                        // multipart/form-data
-     });
-   }  
+    try {
+      console.log("CSV PATH SENDING TO BACKEND:", `${bucketName}/${filePath}`);
+      const res = await fetch(
+        "https://sinai-nexus-backend.onrender.com/exams-cleanup",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            csv_path: `${bucketName}/${filePath}`,
+          }),
+        }
+      );
+
+      const out = await res.json();
+
+      console.log("CSV processing result:", out);
+
+      if (out.error) {
+        setAlert({
+          open: true,
+          msg: "CSV uploaded, but parquet generation failed.",
+          type: "error",
+        });
+      } else {
+        setAlert({
+          open: true,
+          msg: "CSV processed successfully — Parquet created!",
+          type: "success",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      setAlert({
+        open: true,
+        msg: "CSV uploaded, but backend processing failed.",
+        type: "error",
+      });
+    }
+  }
+
+  // 2) Everything ELSE → normal RAG /upload
+  else {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("priority", "3");
+    formData.append("path", fullPath);
+
+    await fetch("https://sinai-nexus-backend.onrender.com/upload", {
+      method: "POST",
+      body: formData,
+    });
+  }
+    
     } catch (err) {
       if (
        err.message &&
@@ -190,8 +230,6 @@ function AdminDashboard({ auth }) {
      });}
    }
  };
-
-
 
 
  // -----------------------------
