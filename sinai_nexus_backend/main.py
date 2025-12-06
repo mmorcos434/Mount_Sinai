@@ -3,6 +3,9 @@ import json
 import numpy as np
 import google.generativeai as genai
 import pdfplumber
+import pandas as pd
+from io import StringIO, BytesIO
+
 
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,7 +15,7 @@ from dotenv import load_dotenv
 from unstructured.partition.auto import partition
 from uuid import uuid4
 
-from huggingface_hub import InferenceClient    # NEW
+from huggingface_hub import InferenceClient                 # NEW
 
 from supabase import create_client
 from src.query_router import answer_scheduling_query
@@ -75,6 +78,93 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+
+class ProcessCSVRequest(BaseModel):
+    csv_path: str   # full supabase path, e.g. "epic-scheduling/Locations_Rooms/schedule.csv"
+
+
+@app.post("/process-locations-csv")
+async def process_locations_csv(req: ProcessCSVRequest):
+
+    full = req.csv_path.strip()
+
+    if "/" not in full:
+        return {"error": "Invalid path"}
+
+    # bucket + path
+    bucket, path = full.split("/", 1)
+
+    try:
+        # -------------------------------------------------------------
+        # 1. Download CSV file
+        # -------------------------------------------------------------
+        response = supabase.storage.from_(bucket).download(path)
+        if not response:
+            return {"error": "Could not download CSV from Supabase"}
+
+        csv_string = response.decode("latin-1")
+        df = pd.read_csv(StringIO(csv_string))
+
+        # -------------------------------------------------------------
+        # 2. Rename columns
+        # -------------------------------------------------------------
+        df = df.rename(columns={
+            "Procedure Name": "EAP Name",
+            "Visit Type Name": "Visit Type Name",
+            "Visit Type Length": "Visit Type Length",
+            "Department Name": "DEP Name",
+            "Resource Name": "Room Name"
+        })
+
+        # -------------------------------------------------------------
+        # 3. Explode lists
+        # -------------------------------------------------------------
+        df["DEP Name"] = df["DEP Name"].astype(str).str.split("\n")
+        df["Room Name"] = df["Room Name"].astype(str).str.split("\n")
+        df = df.explode("DEP Name").explode("Room Name").reset_index(drop=True)
+
+        df["DEP Name"] = df["DEP Name"].str.strip()
+        df["Room Name"] = df["Room Name"].str.strip()
+
+        # -------------------------------------------------------------
+        # 4. Select columns
+        # -------------------------------------------------------------
+        df = df[[
+            "EAP Name",
+            "Visit Type Name",
+            "Visit Type Length",
+            "DEP Name",
+            "Room Name"
+        ]]
+
+        # -------------------------------------------------------------
+        # 5. Convert to parquet
+        # -------------------------------------------------------------
+        buffer = BytesIO()
+        df.to_parquet(buffer, index=False)
+        buffer.seek(0)
+
+        parquet_name = path.split("/")[-1].replace(".csv", "_clean.parquet")
+        parquet_path = f"Locations_Rooms/{parquet_name}"
+
+        # -------------------------------------------------------------
+        # 6. Upload parquet
+        # -------------------------------------------------------------
+        upload_response = supabase.storage.from_(bucket).upload(
+            parquet_path,
+            buffer.getvalue(),
+            file_options={"content-type": "application/vnd.apache.parquet"}
+        )
+
+        return {
+            "message": "Parquet generated and uploaded successfully",
+            "parquet_path": f"{bucket}/{parquet_path}"
+        }
+
+    except Exception as e:
+        return {"error": str(e)}
 
 
 class AgentChatRequest(BaseModel):
