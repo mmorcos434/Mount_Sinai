@@ -149,7 +149,7 @@ function AdminDashboard({ auth }) {
     try {
       console.log("CSV PATH SENDING TO BACKEND:", `${bucketName}/${filePath}`);
       const res = await fetch(
-        "https://sinai-nexus-backend.onrender.com/exams-cleanup",
+        "https://sinai-nexus-backend.onrender.com/process-locations-csv",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

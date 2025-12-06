@@ -85,7 +85,7 @@ class ProcessCSVRequest(BaseModel):
     csv_path: str   # full supabase path, e.g. "epic-scheduling/Locations_Rooms/schedule.csv"
 
 
-@app.post("/exams-cleanup")
+@app.post("/process-locations-csv")
 async def process_locations_csv(req: ProcessCSVRequest):
 
     full = req.csv_path.strip()
