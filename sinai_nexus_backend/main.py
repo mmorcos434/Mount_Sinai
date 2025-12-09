@@ -51,16 +51,15 @@ def embed_text_list(text_list):
     for chunk in text_list:
         try:
             out = hf_client.feature_extraction(
-                inputs=chunk,
+                chunk,
                 model="sentence-transformers/all-MiniLM-L6-v2"
             )
             embeddings.append(out)
         except Exception as e:
             print("Embedding error:", e)
-            embeddings.append([0.0] * 384)  # fallback
+            embeddings.append([0.0] * 384)
 
     return embeddings
-
 
 
 # ------------------------------
