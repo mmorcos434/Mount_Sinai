@@ -41,9 +41,13 @@ else:
 # ------------------------------
 # HuggingFace Embedding Wrapper
 # ------------------------------
+# ------------------------------
+# HuggingFace Embedding Wrapper
+# ------------------------------
 def embed_text_list(text_list):
     """Return embeddings from HuggingFace Inference API."""
     embeddings = []
+
     for chunk in text_list:
         try:
             out = hf_client.feature_extraction(
@@ -54,7 +58,9 @@ def embed_text_list(text_list):
         except Exception as e:
             print("Embedding error:", e)
             embeddings.append([0.0] * 384)  # fallback
+
     return embeddings
+
 
 
 # ------------------------------
