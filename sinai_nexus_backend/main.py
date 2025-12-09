@@ -345,7 +345,12 @@ async def rag_chat(query: str = Form(...)):
     # Gemini generation
     prompt = f"""
 You are a Mount Sinai Radiology assistant.
-Plain text only. No markdown.
+Give ALL answers in plain text. No markdown. No asterisks.
+
+Use the provided text below when answering.
+Notes (priority 1) always override older or conflicting information from documents.
+However, still include all other correct non-conflicting information from the documents.
+If the document does not contain the answer, say I am unsure.
 
 Context:
 {context}
