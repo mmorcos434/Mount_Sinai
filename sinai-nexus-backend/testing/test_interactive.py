@@ -5,5 +5,5 @@ if __name__ == "__main__":
     while q  != "exit":
         q = input("Enter your scheduling query (or type 'exit' to quit): ")
         if q.lower() != "exit":
-            print("A:", answer_scheduling_query(q))
+            print("A:\n", answer_scheduling_query(q))
             print()

@@ -16,6 +16,47 @@ from src.query_handlers import (
     rooms_for_exam
 )
 
+CONFIRMATION_FOOTER = (
+    "\n\n NOTE: Please confirm that the chosen EXAM/LOCATION is correct. "
+    "If not, feel free to be more specific in your query."
+)
+
+
+# Helper functions to return official site and exam names
+# Only exam name
+def format_exam_header(exam, content):
+    """
+    Prepend the official exam name to the answer content.
+    """
+    return (
+        f"Official exam name: {exam}\n\n"
+        f"{content.strip()}\n\n"
+        f"{CONFIRMATION_FOOTER}"
+    )
+
+# Exam and site name
+def format_site_exam_header(site, exam, content):
+    """
+    Prepend the official site and exam names to the answer.
+    """
+    return (
+        f"Location name: {site}\n"
+        f"Official exam name: {exam}\n\n"
+        f"{content.strip()}\n\n"
+        f"{CONFIRMATION_FOOTER}"
+    )
+
+# Only site name
+def format_site_header(site, content):
+    """
+    Prepend the official site name to the answer content.
+    """
+    return (
+        f"Location name: {site}\n\n"
+        f"{content.strip()}\n\n"
+        f"{CONFIRMATION_FOOTER}"
+    )
+
 def answer_scheduling_query(user_input: str):
     """
     Purpose:
@@ -35,49 +76,93 @@ def answer_scheduling_query(user_input: str):
 
     # Intent 1: "Is [exam] done at [site]?"
     if intent == "exam_at_site" and exam and site:
-        found = exam_at_site(exam, site)
-        return f"✅ Yes, {exam} is performed at {site}." if found \
-               else f"❌ No, {exam} is not listed at {site}."
+        found, official_exam, official_site = exam_at_site(exam, site)
+
+        # Case 1: fuzzy match failed (exam or site name not recognized)
+        if not official_exam:
+            return "Exam name not recognized."
+        if not official_site:
+            return "Site name not recognized."
+
+        # Case 2: return formatted answer
+        content = (
+            "Yes, this exam is performed at this site."
+            if found else
+            "No, this exam is not performed at this site."
+        )
+
+        return format_site_exam_header(official_site, official_exam, content)
+
+        # return f"✅ Yes, {exam} is performed at {site}." if found \
+               # else f"❌ No, {exam} is not listed at {site}."
 
     # Intent 2: "Which locations perform [exam]?"
     elif intent == "locations_for_exam" and exam:
-        locs = locations_for_exam(exam)
-        return (
-            f"{exam} is performed at:\n" + "\n".join(locs)
-            if locs else f"Sorry, I couldn’t find any locations for {exam}."
-        )
+        locs, official_exam = locations_for_exam(exam)
+
+        # If fuzzy matching failed (i.e., no official exam name found)
+        if not official_exam:
+            return f"Exam name not recognized. Please check the spelling or try a more complete name."
+
+        # If exam name is found but there are no sites
+        if not locs:
+            return f"Sorry, no locations were found for {official_exam}."
+
+        content = "Performed at:\n" + "\n".join(locs)
+        return format_exam_header(official_exam, content)
 
     # Intent 3: "What exams are offered at [site]?"
     elif intent == "exams_at_site" and site:
-        exams = exams_at_site(site)
-        return (
-            f"Exams offered at {site}\n:" + "\n".join(exams)
-            if exams else f"No exams found for {site}."
-        )
+        exams, official_site = exams_at_site(site)
+
+        if not official_site:
+            return "Site name not recognized."
+        if not exams:
+            return f"No exams found for the site: {official_site}."
+        
+        content = "Exams offered:\n" + "\n".join(exams)
+        return format_site_header(official_site, content)
     
     # Intent 4: "How long does [exam] take?"
     elif intent == "exam_duration" and exam:
-        length = exam_duration(exam)
-        return (
-            f"The visit length for {exam} is {length} minutes."
-            if length else f"Sorry, I couldn’t find a visit duration for {exam}."
-        )
+        duration, official_exam = exam_duration(exam)
+
+        if not official_exam:
+            return "Exam name not recognized."
+
+        if not duration:
+            return f"No visit duration found for the exam: {official_exam}."
+
+        content = f"Duration: {duration} minutes"
+        return format_exam_header(official_exam, content)
     
     # Intent 5: "Which rooms at [site] perform [exam]?"
     elif intent == "rooms_for_exam_at_site" and exam and site:
-        rooms = rooms_for_exam_at_site(exam, site)
-        return (
-            f"Rooms at {site} performing {exam}:\n" + "\n".join(rooms)
-            if rooms else f"No matching rooms found for {exam} at {site}."
-        )
+        rooms, official_exam, official_site = rooms_for_exam_at_site(exam, site)
+
+        if not official_exam:
+            return "Exam name not recognized."
+        if not official_site:
+            return "Site name not recognized."
+
+        if not rooms:
+            return f"No rooms found performing {official_exam} at {official_site}."
+
+        content = "Rooms:\n" + "\n".join(rooms)
+        return format_site_exam_header(official_site, official_exam, content)
     
     # Intent 6: "Which rooms perform [exam]?"
     elif intent == "rooms_for_exam" and exam:
-        rooms = rooms_for_exam(exam)
-        return (
-            f"Rooms performing {exam}:\n" + "\n".join(rooms)
-            if rooms else f"No matching rooms found for {exam}."
-        )
+        rooms, official_exam = rooms_for_exam(exam)
+
+        if not official_exam:
+            return "Exam name not recognized."
+
+        if not rooms:
+            return f"No rooms found performing the exam: {official_exam}."
+
+        content = "Rooms performing this exam:\n" + "\n".join(rooms)
+        return format_exam_header(official_exam, content)
 
     # Fallback if Gemini can't classify the question
     else:
