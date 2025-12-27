@@ -21,7 +21,9 @@ LOCATION_PREFIXES = {
         "radiology associates"
     ],
 
-    "1470 MADISON AVE RAD MRI": [
+    "1470 MADISON AVE": [
+        "Hess",
+        "HESS",
     ],
 
     "425 W 59TH ST": [
@@ -34,12 +36,16 @@ LOCATION_PREFIXES = {
     ],
 
     "MSQ OP RAD": [
+        "Mt Sinai Queens",
+        "Queens"
     ],
 
     "300 CADMAN PLAZA": [
     ],
 
     "MSM": [
+        "Morningside",
+        "Mount Sinai Morningside"
     ],
 
     "MSB": [

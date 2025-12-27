@@ -1,10 +1,9 @@
 {
-  "disabled_exams": [
+  "location_notes": [
     {
-      "exam": "CT HEAD WO IV CONTRAST",
-      "site": "1176 5TH AVE RAD CT",
-      "reason": "machine maintenance",
-      "timestamp": "2025-11-09T12:00:00"
+      "location": "1470 MADISON AVE",
+      "note": "MRI machine down for maintenance in HESS site; book MRIs in room 2 instead",
+      "timestamp": "2025-12-27T13:59:54.490063"
     }
   ]
 }

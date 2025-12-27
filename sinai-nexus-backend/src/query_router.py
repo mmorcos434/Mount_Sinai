@@ -15,12 +15,42 @@ from src.query_handlers import (
     rooms_for_exam_at_site,
     rooms_for_exam
 )
+from src.data_loader import USER_UPDATES
 
 CONFIRMATION_FOOTER = (
     "\n\n NOTE: Please confirm that the chosen EXAM/LOCATION is correct. "
     "If not, feel free to be more specific in your query."
 )
 
+def get_location_notes(location: str):
+    """
+    Return a list of note strings associated with a given location prefix.
+    If no notes exist, returns an empty list.
+    """
+    if not location:
+        return []
+
+    notes = []
+    for entry in USER_UPDATES.get("location_notes", []):
+        if entry.get("location", "").lower() == location.lower():
+            notes.append(entry.get("note"))
+
+    return notes
+
+def format_location_notes(location: str):
+    """
+    Format location-specific notes for display, if any exist.
+    """
+    notes = get_location_notes(location)
+
+    if not notes:
+        return ""
+
+    formatted = "\n⚠️ LOCATION NOTES:\n"
+    for note in notes:
+        formatted += f"- {note}\n"
+
+    return formatted + "\n"
 
 # Helper functions to return official site and exam names
 # Only exam name
@@ -39,9 +69,13 @@ def format_site_exam_header(site, exam, content):
     """
     Prepend the official site and exam names to the answer.
     """
+
+    notes_block = format_location_notes(site)
+
     return (
         f"Location name: {site}\n"
         f"Official exam name: {exam}\n\n"
+        f"{notes_block}"
         f"{content.strip()}\n\n"
         f"{CONFIRMATION_FOOTER}"
     )
@@ -51,8 +85,12 @@ def format_site_header(site, content):
     """
     Prepend the official site name to the answer content.
     """
+
+    notes_block = format_location_notes(site)
+
     return (
         f"Location name: {site}\n\n"
+        f"{notes_block}"
         f"{content.strip()}\n\n"
         f"{CONFIRMATION_FOOTER}"
     )
