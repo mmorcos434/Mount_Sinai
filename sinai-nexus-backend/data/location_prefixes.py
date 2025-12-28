@@ -5,7 +5,7 @@
 # This list list basically lists all the location names.) 
 
 LOCATION_PREFIXES = {
-    "10 UNION SQ E RAD MRI":[
+    "10 UNION SQ E":[
         "union square",
         "union sq",
         "10 union sq",
